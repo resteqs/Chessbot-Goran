@@ -1,16 +1,4 @@
-"""
-[] Eine Methode die Eingabe vom USER holt und entscheidet welche FIGUR bewegt wurde und ändert die Bitmap
-[] Eine M
-[]
-"""
-import movements
-
 class Chessboard:
-    c_WHITE = 1
-    c_BLACK = 0
-
-    turn_Color = c_WHITE
-
     def __init__(self): #Konstruktor. It sets the default values for the board
         self.WHITE_PAWNS =   0b0000000000000000000000000000000000000000000000001111111100000000
         self.WHITE_ROOKS =   0b0000000000000000000000000000000000000000000000000000000010000001
@@ -69,75 +57,9 @@ class Chessboard:
             else:
                 print("·", end = " ")
 
-    def switchTurn(self):
-        if self.turn_Color == self.c_WHITE:
-            self.turn_Color == self.c_BLACK
-        else:
-            self.turn_Color = self.c_WHITE
-    def inputMove(self):
-        move_start = input("Please input starting position: ")
-        move_end = input("Please input where the piece goes: ")
-        #TODO: Is move valid? 
-        #Specify the starting figure and point where it goes
-        piece = move_start[0]
-        field_start = move_start[1:]
-        field_end = move_end[1:]
-
-        field_start_numeric = (7 - ord(field_start[0]) - ord('a')) + (int(field_start[1]) - 1) * 8 #irgendwas ist hier falsch. ich möchte z.B f3 zu 18 übersetzen
-
-        print(field_start_numeric)
-        
-
-
-
-
-    """
-    << 1 moves left
-    << 8 moves forward
-
-    >> 1 moves right
-    >> 8 moves backwards
-
-    << 7 moves top right
-    << 9 moves top left
-
-    >> 7 moves bottom left
-    >> 9 moves top right
-
-              \ | /
-           1  - 0 - 1
-              / | 
-
-    """
-    def test(self, i):
-        knight = (self.WHITE_KNIGHTS >> i) & 1
-        self.WHITE_KNIGHTS = self.WHITE_KNIGHTS & ~(1 << i)
-        knight = knight << 8
-        self.WHITE_KNIGHTS = self.WHITE_KNIGHTS | (knight << i)
-
-
-        self.boardPrinting(self.WHITE_KNIGHTS)
-    
        
 
 
 board = Chessboard() #create a new board object
-<<<<<<< HEAD
-#board.entireBoardPrinting()
-=======
-board.inputMove()
->>>>>>> 198875b3467807fb3f2114b5b796233b54dcef30
-
-
-""""""
-
-pawn1moved = (board.WHITE_PAWNS & ~(1 << 13)) ^ board.WHITE_PAWNS
-pawn1moved = pawn1moved << 16
-board.WHITE_PAWNS = board.WHITE_PAWNS & ~(1 << 13) | pawn1moved
-board.WHITE_KNIGHTS = board.WHITE_KNIGHTS << 16
-board.WHITE_KNIGHTS = board.WHITE_KNIGHTS << 1
-knight1moved = board.WHITE_KNIGHTS & ~(1 << 18)
-knight1moved = knight1moved >> 10
-board.WHITE_KNIGHTS = board.WHITE_KNIGHTS & ~(1 << 23) | knight1moved
-
 board.entireBoardPrinting()
+
