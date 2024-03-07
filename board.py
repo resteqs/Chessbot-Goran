@@ -11,29 +11,38 @@ class Chessboard:
 
     turn_Color = c_WHITE
 
-    def __init__(self): #Konstruktor. It sets the default values for the board
-        self.WHITE_PAWNS =   0b0000000000000000000000000000000000000000000000001111111100000000
-        self.WHITE_ROOKS =   0b0000000000000000000000000000000000000000000000000000000010000001
+
+    #Constructor - sets the default values for the board
+
+    def __init__(self):
+        self.WHITE_PAWNS   = 0b0000000000000000000000000000000000000000000000001111111100000000
+        self.WHITE_ROOKS   = 0b0000000000000000000000000000000000000000000000000000000010000001
         self.WHITE_KNIGHTS = 0b0000000000000000000000000000000000000000000000000000000001000010
         self.WHITE_BISHOPS = 0b0000000000000000000000000000000000000000000000000000000000100100
-        self.WHITE_QUEEN =   0b0000000000000000000000000000000000000000000000000000000000010000
-        self.WHITE_KING =    0b0000000000000000000000000000000000000000000000000000000000001000
-        self.BLACK_PAWNS =   0b0000000011111111000000000000000000000000000000000000000000000000
-        self.BLACK_ROOKS =   0b1000000100000000000000000000000000000000000000000000000000000000
+        self.WHITE_QUEEN   = 0b0000000000000000000000000000000000000000000000000000000000010000
+        self.WHITE_KING    = 0b0000000000000000000000000000000000000000000000000000000000001000
+        self.BLACK_PAWNS   = 0b0000000011111111000000000000000000000000000000000000000000000000
+        self.BLACK_ROOKS   = 0b1000000100000000000000000000000000000000000000000000000000000000
         self.BLACK_KNIGHTS = 0b0100001000000000000000000000000000000000000000000000000000000000
         self.BLACK_BISHOPS = 0b0010010000000000000000000000000000000000000000000000000000000000
-        self.BLACK_QUEEN =   0b0001000000000000000000000000000000000000000000000000000000000000
-        self.BLACK_KING =    0b0000100000000000000000000000000000000000000000000000000000000000
-    def boardPrinting(self, bitboard): #python automatically passes the object as an argument to the function so i need an extra parameter self
+        self.BLACK_QUEEN   = 0b0001000000000000000000000000000000000000000000000000000000000000
+        self.BLACK_KING    = 0b0000100000000000000000000000000000000000000000000000000000000000
+
+
+    def boardPrinting(self, bitboard): #python automatically passes the object as an argument to the function so I need the extra parameter 'self'
         for bit in range(64, 0, -1): #iterate from 64 (inclusive) to 0(exclusive) with step -1
             if bit % 8 == 0:
                 print("")
-            curr_bit = (bitboard >> bit-1) & 1 #Performs bitshifting on the bitboard and checks wheter LSB is 1 or 0. & is a binary AND operator 1&1 = 1; 0&1 = 0
+            curr_bit = (bitboard >> bit-1) & 1 #Performs bitshifting on the bitboard and checks wheter LSB is 1 or 0. & is a binary AND operator 1&1 = 1, 0&1 = 0
             if(curr_bit == 1):
                 print(curr_bit, end = " ")
             else:
                 print("·", end = " ")
-    def entireBoardPrinting(self): #prints the entire chess board
+
+
+    #prints the entire chess board
+
+    def entireBoardPrinting(self):
         entireBoard = self.WHITE_PAWNS | self.WHITE_BISHOPS | self.WHITE_KING | self.WHITE_KNIGHTS | self.WHITE_ROOKS | self.WHITE_QUEEN | self.BLACK_PAWNS | self.BLACK_BISHOPS | self.BLACK_KNIGHTS | self.BLACK_KING | self.BLACK_QUEEN | self.BLACK_ROOKS
         for bit in range (64, 0, -1):
             if bit % 8 == 0:
