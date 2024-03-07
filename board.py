@@ -1,8 +1,10 @@
+
 """
 [] Eine Methode die Eingabe vom USER holt und entscheidet welche FIGUR bewegt wurde und ändert die Bitmap
 [] Eine M
 []
 """
+
 import movements
 
 class Chessboard:
@@ -59,7 +61,7 @@ class Chessboard:
                     print("R", end = " ")
                 elif(curr_bit == (self.WHITE_QUEEN >> bit - 1) & 1):
                     print("Q", end = " ")
-                elif(curr_bit == (self.WHITE_KING >> bit - 1) & 1):
+                elif(curr_bit == (self.WHITE_KING >> bit - 1) & 1):       
                     print("K", end = " ")
                 elif(curr_bit == (self.BLACK_PAWNS >> bit - 1) & 1):
                     print("p", end = " ")
@@ -76,41 +78,85 @@ class Chessboard:
             else:
                 print("·", end = " ")
 
+
     def switchTurn(self):
         if self.turn_Color == self.c_WHITE:
             self.turn_Color == self.c_BLACK
         else:
             self.turn_Color = self.c_WHITE
+
+
+
+    #specific defined chess notation:
+    #King K, Queen Q, Rook R, Bishop B, Knight N, Pawn P
+    #always carry piece char along and never add any additionals like '+' or 'x' for checks and takes
+    
     def inputMove(self):
         move_start = input("Please input starting position: ")
-        move_end = input("Please input where the piece goes: ")
-        #TODO: Is move valid? 
-        #Specify the starting figure and point where it goes
-        piece = move_start[0]
-        field_start = move_start[1:]
-        field_end = move_end[1:]
+        move_to = input("Please input where the piece goes: ")
 
-        field_start_numeric = (7 - ord(field_start[0]) - ord('a')) + (int(field_start[1]) - 1) * 8 #irgendwas ist hier falsch. ich möchte z.B f3 zu 18 übersetzen
+        #TODO: check if move is legal
+        #checking if notation is correct is implemented
+
+        #check if notation has correct length
+        if len(move_start) != 3 and len(move_to) != 3:
+            print(f"ERROR: Notation wrong")
+            return
+
+        #check if first char (piece) is valid
+        validChars = ["K", "Q", "R", "B", "N", "P"]
+        validity = 0
+        for char in validChars:
+            if char == move_start[0]:
+                validity += 1
+            if char == move_to[0]:
+                validity += 1
+        if validity != 2:
+            print(f"ERROR: Notation wrong")
+            return
+        
+        #check if second char (column) is valid
+        move_start_column = ord(move_start[1])
+        move_to_column = ord(move_to[1])
+        if not(move_start_column >= 97 and move_start_column <= 104 and move_to_column >= 97 and move_to_column <= 104):
+            print(f"ERROR: Notation wrong")
+            return
+        
+        #check if third char (row) is valid, if char is a digit
+        if not(move_start[2].isdigit() and move_to[2].isdigit()):
+            print(f"ERROR: Notation wrong")
+            return
+        move_start_row = int(move_start[2])-1
+        move_to_row = int(move_to[2])-1
+        #check if third char (row) is valid, if char is in valid range
+        if not(move_start_row >= 0 and move_start_row <= 7 and move_to_row >= 0 and move_to_row <= 7):
+            print(f"ERROR: Notation wrong")
+            return
+      
+        field_start_numeric = (7 - move_start_column + ord('a')) + (move_start_row * 8)
+        field_to_numeric = (7 - move_to_column + ord('a')) + (move_to_row * 8)
 
         print(field_start_numeric)
-
-
-
-
+        print(field_to_numeric)
 
     """
-    << 1 moves left
-    << 8 moves forward
-    >> 1 moves right
-    >> 8 moves backwards
-    << 7 moves top right
-    << 9 moves top left
-    >> 7 moves bottom left
-    >> 9 moves top right
-              \ | /
-           1  - 0 - 1
-              / | 
+    << 1    moves left
+    << 8    moves forward
+    >> 1    moves right
+    >> 8    moves backwards
+    << 7    moves top right
+    << 9    moves top left
+    >> 7    moves bottom left
+    >> 9    moves bottom right
+
+     9  8  7
+      \ | /
+    1 - 0 - 1
+      / | \
+     7  8  9
+
     """
+
     def test(self, i):
         knight = (self.WHITE_KNIGHTS >> i) & 1
         self.WHITE_KNIGHTS = self.WHITE_KNIGHTS & ~(1 << i)
@@ -125,4 +171,7 @@ class Chessboard:
 
 board = Chessboard() #create a new board object
 board.entireBoardPrinting()
-board.inputMove()
+print("")
+
+for i in range(30):
+    board.inputMove()
