@@ -1,18 +1,26 @@
 
 
-#implement: h_func(s)
-#implement: succ(s)
-#implement: terminal(s)
-#implement: utility(s)
+from heuristic import HeuristicFunction
+from successor import SuccessorFunction
+import board
 
-
-class chessBot:
+class ChessBot:
 
     #minimax recursive algorithm with alpha-beta pruning and heuristics
     #call minimax with 'depth' set to desired max search depth and alpha = -inf, beta = +inf
     #returns utility of predicted final state and optimal next move
 
     #alpha-beta-pruning might be flawed
+
+    def __init__(self):
+        
+        #set any values if later needed
+
+        succ = SuccessorFunction()
+        heur = HeuristicFunction()
+
+        return
+
 
     def max_val(self, depth, h_func, s, bestmove, alpha, beta):
         #check if state is terminal state
@@ -21,13 +29,13 @@ class chessBot:
         
         #break when max depth reached and return its heuristic value and state
         if depth == 0:
-            return h_func(s), s
+            return self.heur.h_func(s), s
         
         max_val = alpha
         current_bestmove = None
 
         #branch successors
-        for state in self.succ(s):
+        for state in self.succ.scsr(s):
             val, pre_bestmove = self.min_val(depth-1, h_func, state, bestmove, max_val, beta)
 
             if val > max_val:
@@ -47,13 +55,13 @@ class chessBot:
         
         #break when max depth reached and return its heuristic value and state
         if depth == 0:
-            return h_func(s)
+            return self.heur.h_mega(s)
         
         min_val = beta
         current_bestmove = None
 
         #branch successors
-        for state in self.succ(s):
+        for state in self.succ.scsr(s):
             val, pre_bestmove = self.max_val(depth-1, h_func, state, bestmove, alpha, min_val)
 
             if(val < min_val):
@@ -65,27 +73,6 @@ class chessBot:
                 return alpha, pre_bestmove
 
         return min_val, current_bestmove
-    
-
-    #heuristic function
-    #DOING - IMPLEMENT
-
-    def h_func(self, state) -> int:
-        h = 0
-
-        #calculate heuristic
-
-        return h
-    
-    
-    #successor function
-    #DOING - IMPLEMENT
-
-    def succ(self, state):
-        
-        #return list of successors
-
-        return
     
 
     #terminal function
