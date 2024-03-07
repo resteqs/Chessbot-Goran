@@ -11,6 +11,8 @@ class chessBot:
     #call minimax with 'depth' set to desired max search depth and alpha = -inf, beta = +inf
     #returns utility of predicted final state and optimal state for next move
 
+    #alpha-beta-pruning might be flawed
+
     def max_val(self, depth, h_func, s, bestmove, alpha, beta):
         #check if state is terminal state
         if terminal(s):
