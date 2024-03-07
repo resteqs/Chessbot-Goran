@@ -61,5 +61,18 @@ class Chessboard:
 
 
 board = Chessboard() #create a new board object
-board.entireBoardPrinting()
+#board.entireBoardPrinting()
 
+
+""""""
+
+pawn1moved = (board.WHITE_PAWNS & ~(1 << 13)) ^ board.WHITE_PAWNS
+pawn1moved = pawn1moved << 16
+board.WHITE_PAWNS = board.WHITE_PAWNS & ~(1 << 13) | pawn1moved
+board.WHITE_KNIGHTS = board.WHITE_KNIGHTS << 16
+board.WHITE_KNIGHTS = board.WHITE_KNIGHTS << 1
+knight1moved = board.WHITE_KNIGHTS & ~(1 << 18)
+knight1moved = knight1moved >> 10
+board.WHITE_KNIGHTS = board.WHITE_KNIGHTS & ~(1 << 23) | knight1moved
+
+board.entireBoardPrinting()

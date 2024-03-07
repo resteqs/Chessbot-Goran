@@ -4,6 +4,8 @@ class HeuristicFunction:
     def __init__(self):
 
         #init magnitudes, magX
+        
+        return
 
 
     
