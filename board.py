@@ -82,14 +82,14 @@ class Chessboard:
         all_bitboards = [self.WHITE_PAWNS, self.WHITE_BISHOPS, self.WHITE_KNIGHTS, self.WHITE_ROOKS, self.WHITE_QUEEN, self.WHITE_KING, self.BLACK_PAWNS, self.BLACK_BISHOPS, self.BLACK_KNIGHTS, self.BLACK_ROOKS, self.BLACK_QUEEN, self.BLACK_KING]
         return all_bitboards
 
-
     def switchTurn(self):
         if self.turn_Color == self.c_WHITE:
             self.turn_Color == self.c_BLACK
         else:
             self.turn_Color = self.c_WHITE
 
-
+    def getColor(self):
+        return self.turn_Color
 
     #specific defined chess notation:
     #King K, Queen Q, Rook R, Bishop B, Knight N, Pawn P
@@ -103,6 +103,11 @@ class Chessboard:
 
         #TODO: check if move is legal
         #checking if notation is correct is implemented
+
+        ########################################
+        #             castling                 #
+        ########################################
+        
 
         #check if notation has correct length
         if len(move_from) != 3 and len(move_to) != 3:
@@ -141,11 +146,11 @@ class Chessboard:
         field_to_numeric = (7 - move_to_column + ord('a')) + (move_to_row * 8)
 
         #check if move legal and execute move
-        legal_moves = self.succ.legalMoves(self.getBoard, piece, field_from_numeric)
+        legal_moves = self.succ.legalMoves(self.getBoard(), piece, field_from_numeric, self.getColor())
         for move in legal_moves:
             if move == field_to_numeric:
                 print(f"{piece}: {field_from_numeric} to {field_to_numeric}")
-                self.move(piece, field_from_numeric, field_to_numeric, 1)
+                self.move(piece, field_from_numeric, field_to_numeric, self.getColor())
                 board.entireBoardPrinting()
         print(f"ERROR: Move not legal")
         
