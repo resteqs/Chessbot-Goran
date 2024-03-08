@@ -9,11 +9,7 @@ class SuccessorFunction:
 
         return
     
-    def legalMoves(self, state, piece, numerical_position):
+    def legalMoves(self, all_bitboards, piece, numerical_position):
         legal_moves = []
-
-        #given a specific piece and its position, do the following:
-        # - check if there actually is a corresponding piece on the board
-        # - calculate all legal moves
-
+        
         return legal_moves
