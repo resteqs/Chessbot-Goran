@@ -1,12 +1,11 @@
 
 """
-[] Eine Methode die Eingabe vom USER holt und entscheidet welche FIGUR bewegt wurde und ändert die Bitmap
+[x] Eine Methode die Eingabe vom USER holt und entscheidet welche FIGUR bewegt wurde und ändert die Bitmap
 [] Eine M
 []
 """
 
 import movements
-from successor import SuccessorFunction
 
 class Chessboard:
     c_WHITE = 1
@@ -14,7 +13,8 @@ class Chessboard:
 
     turn_Color = c_WHITE
 
-    #Constructor - sets the default values for the board and creates an instance of SuccessorFunction
+
+    #Constructor - sets the default values for the board
 
     def __init__(self):
         self.WHITE_PAWNS   = 0b0000000000000000000000000000000000000000000000001111111100000000
@@ -29,8 +29,6 @@ class Chessboard:
         self.BLACK_BISHOPS = 0b0010010000000000000000000000000000000000000000000000000000000000
         self.BLACK_QUEEN   = 0b0001000000000000000000000000000000000000000000000000000000000000
         self.BLACK_KING    = 0b0000100000000000000000000000000000000000000000000000000000000000
-
-        self.succ = SuccessorFunction()
 
 
     def boardPrinting(self, bitboard): #python automatically passes the object as an argument to the function so I need the extra parameter 'self'
@@ -140,34 +138,7 @@ class Chessboard:
 
         print(f"{piece}: {field_from_numeric} to {field_to_numeric}")
 
-    """
-    << 1    moves left
-    << 8    moves forward
-    >> 1    moves right
-    >> 8    moves backwards
-    << 7    moves top right
-    << 9    moves top left
-    >> 7    moves bottom left
-    >> 9    moves bottom right
 
-     9  8  7
-      \ | /
-    1 - 0 - 1
-      / | \
-     7  8  9
-
-    """
-
-    def test(self, i):
-        knight = (self.WHITE_KNIGHTS >> i) & 1
-        self.WHITE_KNIGHTS = self.WHITE_KNIGHTS & ~(1 << i)
-        knight = knight << 8
-        self.WHITE_KNIGHTS = self.WHITE_KNIGHTS | (knight << i)
-
-
-        self.boardPrinting(self.WHITE_KNIGHTS)
-
-    
     def move(self, pieceChar, startField, endField, color):
         # switch cases checks which bitbboard will be changed due to the move
         if color == self.c_WHITE:
@@ -209,6 +180,49 @@ class Chessboard:
         else:
             piece >>= moveDistance
         return bitboard | (piece << startField)
+    
+    def checkForTakes(self, endField, color): # This method checks wheteher or not a user attacks a piece of the enemy ort not.
+        if color == self.c_WHITE:
+            if (self.BLACK_PAWNS >> endField) & 1: #Checks if a figure is at postion endfield
+                self.BLACK_PAWNS = self.BLACK_PAWNS & ~(1 << endField) #If so the figure gets removed
+            elif (self.BLACK_ROOKS >> endField) & 1:
+                self.BLACK_ROOKS = self.BLACK_ROOKS & ~(1 << endField)
+            elif (self.BLACK_KNIGHTS >> endField) & 1:
+                self.BLACK_KNIGHTS = self.BLACK_KNIGHTS & ~(1 << endField)
+            elif (self.BLACK_BISHOPS >> endField) & 1:
+                self.BLACK_BISHOPS = self.BLACK_BISHOPS & ~(1 << endField)
+            elif (self.BLACK_QUEEN >> endField) & 1:
+                 self.BLACK_QUEEN = self.BLACK_QUEEN & ~(1 << endField)
+            elif (self.BLACK_KING >> endField) & 1:
+                self.BLACK_KING = self.BLACK_KING & ~(1 << endField)
+        else:
+            if (self.WHITE_PAWNS >> endField) & 1:
+             self.WHITE_PAWNS = self.WHITE_PAWNS & ~(1 << endField)
+            elif (self.WHITE_ROOKS >> endField) & 1:
+                self.WHITE_ROOKS = self.WHITE_ROOKS & ~(1 << endField)
+            elif (self.WHITE_KNIGHTS >> endField) & 1:
+             self.WHITE_KNIGHTS = self.WHITE_KNIGHTS & ~(1 << endField)
+            elif (self.WHITE_BISHOPS >> endField) & 1:
+             self.WHITE_BISHOPS = self.WHITE_BISHOPS & ~(1 << endField)
+            elif (self.WHITE_QUEEN >> endField) & 1:
+                self.WHITE_QUEEN = self.WHITE_QUEEN & ~(1 << endField)
+            elif (self.WHITE_KING >> endField) & 1:
+                self.WHITE_KING = self.WHITE_KING & ~(1 << endField)
+
+
+    
+    
+    def test(self, i):
+        knight = (self.WHITE_KNIGHTS >> i) & 1
+        self.WHITE_KNIGHTS = self.WHITE_KNIGHTS & ~(1 << i)
+        knight = knight << 8
+        self.WHITE_KNIGHTS = self.WHITE_KNIGHTS | (knight << i)
+
+
+        self.boardPrinting(self.WHITE_KNIGHTS)
+
+
+
 
 board = Chessboard() #create a new board object
 board.entireBoardPrinting()
