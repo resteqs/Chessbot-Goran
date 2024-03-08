@@ -94,6 +94,7 @@ class Chessboard:
     #always carry piece char along and never add any additionals like '+' or 'x' for checks and takes
     
     def inputMove(self):
+        print("\n")
         move_from = input("Please input starting position: ")
         move_to = input("Please input where the piece goes: ")
         piece = None
@@ -107,7 +108,7 @@ class Chessboard:
             return
 
         #check if first char (piece) is valid
-        validChars = ["K", "Q", "R", "B", "N", "P"]
+        validChars = ['K', 'Q', 'R', 'B', 'N', 'P']
         for char in validChars:
             if char == move_from[0] and char == move_to[0]:
                 piece = char
@@ -136,36 +137,13 @@ class Chessboard:
         field_from_numeric = (7 - move_from_column + ord('a')) + (move_from_row * 8)
         field_to_numeric = (7 - move_to_column + ord('a')) + (move_to_row * 8)
 
-        legal_moves = self.succ.legalMoves(state, piece, field_from_numeric)
+        #legal_moves = self.succ.legalMoves(state, piece, field_from_numeric)
 
         print(f"{piece}: {field_from_numeric} to {field_to_numeric}")
 
-    """
-    << 1    moves left
-    << 8    moves forward
-    >> 1    moves right
-    >> 8    moves backwards
-    << 7    moves top right
-    << 9    moves top left
-    >> 7    moves bottom left
-    >> 9    moves bottom right
+        self.move(piece, field_from_numeric, field_to_numeric, 1)
 
-     9  8  7
-      \ | /
-    1 - 0 - 1
-      / | \
-     7  8  9
-
-    """
-
-    def test(self, i):
-        knight = (self.WHITE_KNIGHTS >> i) & 1
-        self.WHITE_KNIGHTS = self.WHITE_KNIGHTS & ~(1 << i)
-        knight = knight << 8
-        self.WHITE_KNIGHTS = self.WHITE_KNIGHTS | (knight << i)
-
-
-        self.boardPrinting(self.WHITE_KNIGHTS)
+        board.entireBoardPrinting()
 
     
     def move(self, pieceChar, startField, endField, color):
@@ -199,7 +177,7 @@ class Chessboard:
                 case 'K':
                     self.BLACK_KING = self.moveHelperFunction(self.BLACK_KING, startField, endField)
         
-    def moveHelperFunction(bitboard, startField, endField):
+    def moveHelperFunction(self, bitboard, startField, endField):
         piece = (bitboard >> startField) & 1
         bitboard = bitboard & ~(1 << startField)
 
@@ -207,12 +185,11 @@ class Chessboard:
         if moveDistance > 0:
             piece <<= moveDistance
         else:
-            piece >>= moveDistance
+            piece >>= abs(moveDistance)
         return bitboard | (piece << startField)
 
 board = Chessboard() #create a new board object
 board.entireBoardPrinting()
-print("")
 
 for i in range(30):
     board.inputMove()
