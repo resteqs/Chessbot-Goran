@@ -78,6 +78,9 @@ class Chessboard:
             else:
                 print("·", end = " ")
 
+    def getBoard(self):
+        all_bitboards = [self.WHITE_PAWNS, self.WHITE_BISHOPS, self.WHITE_KNIGHTS, self.WHITE_ROOKS, self.WHITE_QUEEN, self.WHITE_KING, self.BLACK_PAWNS, self.BLACK_BISHOPS, self.BLACK_KNIGHTS, self.BLACK_ROOKS, self.BLACK_QUEEN, self.BLACK_KING]
+        return all_bitboards
 
     def switchTurn(self):
         if self.turn_Color == self.c_WHITE:
@@ -85,7 +88,8 @@ class Chessboard:
         else:
             self.turn_Color = self.c_WHITE
 
-
+    def getColor(self):
+        return self.turn_Color
 
     #specific defined chess notation:
     #King K, Queen Q, Rook R, Bishop B, Knight N, Pawn P
@@ -99,6 +103,11 @@ class Chessboard:
 
         #TODO: check if move is legal
         #checking if notation is correct is implemented
+
+        ########################################
+        #             castling                 #
+        ########################################
+        
 
         #check if notation has correct length
         if len(move_from) != 3 and len(move_to) != 3:
@@ -131,19 +140,22 @@ class Chessboard:
         if not(move_from_row >= 0 and move_from_row <= 7 and move_to_row >= 0 and move_to_row <= 7):
             print(f"ERROR: Notation wrong")
             return
-      
+        
+        #calculate numeric positions, see FelderBitNummern.png
         field_from_numeric = (7 - move_from_column + ord('a')) + (move_from_row * 8)
         field_to_numeric = (7 - move_to_column + ord('a')) + (move_to_row * 8)
 
-        #legal_moves = self.succ.legalMoves(state, piece, field_from_numeric)
+        #check if move legal and execute move
+        legal_moves = self.succ.legalMoves(self.getBoard(), piece, field_from_numeric, self.getColor())
+        for move in legal_moves:
+            if move == field_to_numeric:
+                print(f"{piece}: {field_from_numeric} to {field_to_numeric}")
+                self.move(piece, field_from_numeric, field_to_numeric, self.getColor())
+                board.entireBoardPrinting()
+        print(f"ERROR: Move not legal")
+        
 
-        print(f"{piece}: {field_from_numeric} to {field_to_numeric}")
 
-        self.move(piece, field_from_numeric, field_to_numeric, self.c_WHITE)
-
-        board.entireBoardPrinting()
-
-    
     def move(self, pieceChar, startField, endField, color):
         # switch cases checks which bitbboard will be changed due to the move
         if color == self.c_WHITE:
@@ -227,6 +239,7 @@ class Chessboard:
 
 board = Chessboard() #create a new board object
 board.entireBoardPrinting()
+board.getBoard()
 
 for i in range(30):
     board.inputMove()
