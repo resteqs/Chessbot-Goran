@@ -16,8 +16,8 @@ class ChessBot:
         
         #set any values if later needed
 
-        succ = SuccessorFunction()
-        heur = HeuristicFunction()
+        self.succ = SuccessorFunction()
+        self.heur = HeuristicFunction()
 
         return
 
@@ -35,7 +35,7 @@ class ChessBot:
         current_bestmove = None
 
         #branch successors
-        for state in self.succ.scsr(s):
+        for state in self.succ.successors(s):
             val, pre_bestmove = self.min_val(depth-1, h_func, state, bestmove, max_val, beta)
 
             if val > max_val:
@@ -61,7 +61,7 @@ class ChessBot:
         current_bestmove = None
 
         #branch successors
-        for state in self.succ.scsr(s):
+        for state in self.succ.successors(s):
             val, pre_bestmove = self.max_val(depth-1, h_func, state, bestmove, alpha, min_val)
 
             if(val < min_val):

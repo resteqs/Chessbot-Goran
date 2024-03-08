@@ -6,6 +6,7 @@
 """
 
 import movements
+from successor import SuccessorFunction
 
 class Chessboard:
     c_WHITE = 1
@@ -13,8 +14,7 @@ class Chessboard:
 
     turn_Color = c_WHITE
 
-
-    #Constructor - sets the default values for the board
+    #Constructor - sets the default values for the board and creates an instance of SuccessorFunction
 
     def __init__(self):
         self.WHITE_PAWNS   = 0b0000000000000000000000000000000000000000000000001111111100000000
@@ -29,6 +29,8 @@ class Chessboard:
         self.BLACK_BISHOPS = 0b0010010000000000000000000000000000000000000000000000000000000000
         self.BLACK_QUEEN   = 0b0001000000000000000000000000000000000000000000000000000000000000
         self.BLACK_KING    = 0b0000100000000000000000000000000000000000000000000000000000000000
+
+        self.succ = SuccessorFunction()
 
 
     def boardPrinting(self, bitboard): #python automatically passes the object as an argument to the function so I need the extra parameter 'self'
@@ -92,52 +94,51 @@ class Chessboard:
     #always carry piece char along and never add any additionals like '+' or 'x' for checks and takes
     
     def inputMove(self):
-        move_start = input("Please input starting position: ")
+        move_from = input("Please input starting position: ")
         move_to = input("Please input where the piece goes: ")
+        piece = None
 
         #TODO: check if move is legal
         #checking if notation is correct is implemented
 
         #check if notation has correct length
-        if len(move_start) != 3 and len(move_to) != 3:
+        if len(move_from) != 3 and len(move_to) != 3:
             print(f"ERROR: Notation wrong")
             return
 
         #check if first char (piece) is valid
         validChars = ["K", "Q", "R", "B", "N", "P"]
-        validity = 0
         for char in validChars:
-            if char == move_start[0]:
-                validity += 1
-            if char == move_to[0]:
-                validity += 1
-        if validity != 2:
-            print(f"ERROR: Notation wrong")
+            if char == move_from[0] and char == move_to[0]:
+                piece = char
+        if piece is None:
+            print(f"ERROR: Notation wrong or piece moved not the same")
             return
         
         #check if second char (column) is valid
-        move_start_column = ord(move_start[1])
+        move_from_column = ord(move_from[1])
         move_to_column = ord(move_to[1])
-        if not(move_start_column >= 97 and move_start_column <= 104 and move_to_column >= 97 and move_to_column <= 104):
+        if not(move_from_column >= 97 and move_from_column <= 104 and move_to_column >= 97 and move_to_column <= 104):
             print(f"ERROR: Notation wrong")
             return
         
         #check if third char (row) is valid, if char is a digit
-        if not(move_start[2].isdigit() and move_to[2].isdigit()):
+        if not(move_from[2].isdigit() and move_to[2].isdigit()):
             print(f"ERROR: Notation wrong")
             return
-        move_start_row = int(move_start[2])-1
+        move_from_row = int(move_from[2])-1
         move_to_row = int(move_to[2])-1
         #check if third char (row) is valid, if char is in valid range
-        if not(move_start_row >= 0 and move_start_row <= 7 and move_to_row >= 0 and move_to_row <= 7):
+        if not(move_from_row >= 0 and move_from_row <= 7 and move_to_row >= 0 and move_to_row <= 7):
             print(f"ERROR: Notation wrong")
             return
       
-        field_start_numeric = (7 - move_start_column + ord('a')) + (move_start_row * 8)
+        field_from_numeric = (7 - move_from_column + ord('a')) + (move_from_row * 8)
         field_to_numeric = (7 - move_to_column + ord('a')) + (move_to_row * 8)
 
-        print(field_start_numeric)
-        print(field_to_numeric)
+        legal_moves = self.succ.legalMoves(state, piece, field_from_numeric)
+
+        print(f"{piece}: {field_from_numeric} to {field_to_numeric}")
 
     """
     << 1    moves left
