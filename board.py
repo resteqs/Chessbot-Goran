@@ -166,8 +166,48 @@ class Chessboard:
 
         self.boardPrinting(self.WHITE_KNIGHTS)
 
+    
+    def move(self, pieceChar, startField, endField, color):
+        # switch cases checks which bitbboard will be changed due to the move
+        if color == self.c_WHITE:
+            match pieceChar:
+                case 'P':
+                    self.WHITE_PAWNS = self.moveHelperFunction(self.WHITE_PAWNS, startField, endField)
+                case 'N':
+                    self.WHITE_KNIGHTS = self.moveHelperFunction(self.WHITE_KNIGHTS, startField, endField)
+                case 'B':
+                    self.WHITE_BISHOPS = self.moveHelperFunction(self.WHITE_BISHOPS, startField, endField)
+                case 'R':
+                    self.WHITE_ROOKS = self.moveHelperFunction(self.WHITE_ROOKS, startField, endField)
+                case 'Q':
+                    self.WHITE_QUEEN = self.moveHelperFunction(self.WHITE_QUEEN, startField, endField)
+                case 'K':
+                    self.WHITE_KING = self.moveHelperFunction(self.WHITE_KING, startField, endField)
+        else:
+             match pieceChar:
+                case 'P':
+                    self.BLACK_PAWNS = self.moveHelperFunction(self.BLACK_PAWNS, startField, endField)
+                case 'N':
+                    self.BLACK_KNIGHTS = self.moveHelperFunction(self.BLACK_KNIGHTS, startField, endField)
+                case 'B':
+                    self.BLACK_BISHOPS = self.moveHelperFunction(self.BLACK_BISHOPS, startField, endField)
+                case 'R':
+                    self.BLACK_ROOKS = self.moveHelperFunction(self.BLACK_ROOKS, startField, endField)
+                case 'Q':
+                    self.BLACK_QUEEN = self.moveHelperFunction(self.BLACK_QUEEN, startField, endField)
+                case 'K':
+                    self.BLACK_KING = self.moveHelperFunction(self.BLACK_KING, startField, endField)
+        
+    def moveHelperFunction(bitboard, startField, endField):
+        piece = (bitboard >> startField) & 1
+        bitboard = bitboard & ~(1 << startField)
 
-
+        moveDistance = endField - startField #check how much we should bitshift
+        if moveDistance > 0:
+            piece <<= moveDistance
+        else:
+            piece >>= moveDistance
+        return bitboard | (piece << startField)
 
 board = Chessboard() #create a new board object
 board.entireBoardPrinting()
