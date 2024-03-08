@@ -246,17 +246,13 @@ class Chessboard:
                     self.BLACK_QUEEN = self.moveHelperFunction(self.BLACK_QUEEN, startField, endField)
                 case 'K':
                     self.BLACK_KING = self.moveHelperFunction(self.BLACK_KING, startField, endField)
+        self.checkForTakes(endField, color)
+        
         
     def moveHelperFunction(self, bitboard, startField, endField):
-        piece = (bitboard >> startField) & 1
         bitboard = bitboard & ~(1 << startField)
-
-        moveDistance = endField - startField #check how much we should bitshift
-        if moveDistance > 0:
-            piece <<= moveDistance
-        else:
-            piece >>= abs(moveDistance)
-        return bitboard | (piece << startField)
+        return bitboard | (1 << endField)
+        
     
     def checkForTakes(self, endField, color): # This method checks wheteher or not a user attacks a piece of the enemy ort not.
         if color == self.c_WHITE:
