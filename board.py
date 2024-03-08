@@ -6,6 +6,7 @@
 """
 
 import movements
+from successor import SuccessorFunction
 
 class Chessboard:
     c_WHITE = 1
@@ -29,6 +30,8 @@ class Chessboard:
         self.BLACK_BISHOPS = 0b0010010000000000000000000000000000000000000000000000000000000000
         self.BLACK_QUEEN   = 0b0001000000000000000000000000000000000000000000000000000000000000
         self.BLACK_KING    = 0b0000100000000000000000000000000000000000000000000000000000000000
+
+        self.succ = SuccessorFunction()
 
 
     def boardPrinting(self, bitboard): #python automatically passes the object as an argument to the function so I need the extra parameter 'self'
@@ -110,7 +113,7 @@ class Chessboard:
         
 
         #check if notation has correct length
-        if len(move_from) != 3 and len(move_to) != 3:
+        if len(move_from) != 3 or len(move_to) != 3:
             print(f"ERROR: Notation wrong")
             return
 
@@ -145,13 +148,70 @@ class Chessboard:
         field_from_numeric = (7 - move_from_column + ord('a')) + (move_from_row * 8)
         field_to_numeric = (7 - move_to_column + ord('a')) + (move_to_row * 8)
 
+        #check if the piece actually exists on that square
+        all_bitboards = self.getBoard()
+        if self.getColor() == self.c_WHITE:
+            match piece:
+                case 'P':
+                    if not((1 << field_from_numeric) & all_bitboards[0] == (1 << field_from_numeric)):
+                        print(f"ERROR: Piece does not exist at that position")
+                        return
+                case 'B':
+                    if not((1 << field_from_numeric) & all_bitboards[1] == (1 << field_from_numeric)):
+                        print(f"ERROR: Piece does not exist at that position")
+                        return
+                case 'N':
+                    if not((1 << field_from_numeric) & all_bitboards[2] == (1 << field_from_numeric)):
+                        print(f"ERROR: Piece does not exist at that position")
+                        return
+                case 'R':
+                    if not((1 << field_from_numeric) & all_bitboards[3] == (1 << field_from_numeric)):
+                        print(f"ERROR: Piece does not exist at that position")
+                        return
+                case 'Q':
+                    if not((1 << field_from_numeric) & all_bitboards[4] == (1 << field_from_numeric)):
+                        print(f"ERROR: Piece does not exist at that position")
+                        return
+                case 'K':
+                    if not((1 << field_from_numeric) & all_bitboards[5] == (1 << field_from_numeric)):
+                        print(f"ERROR: Piece does not exist at that position")
+                        return
+        else:
+            match piece:
+                case 'P':
+                    if not((1 << field_from_numeric) & all_bitboards[6] == (1 << field_from_numeric)):
+                        print(f"ERROR: Piece does not exist at that position")
+                        return
+                case 'B':
+                    if not((1 << field_from_numeric) & all_bitboards[7] == (1 << field_from_numeric)):
+                        print(f"ERROR: Piece does not exist at that position")
+                        return
+                case 'N':
+                    if not((1 << field_from_numeric) & all_bitboards[8] == (1 << field_from_numeric)):
+                        print(f"ERROR: Piece does not exist at that position")
+                        return
+                case 'R':
+                    if not((1 << field_from_numeric) & all_bitboards[9] == (1 << field_from_numeric)):
+                        print(f"ERROR: Piece does not exist at that position")
+                        return
+                case 'Q':
+                    if not((1 << field_from_numeric) & all_bitboards[10] == (1 << field_from_numeric)):
+                        print(f"ERROR: Piece does not exist at that position")
+                        return
+                case 'K':
+                    if not((1 << field_from_numeric) & all_bitboards[11] == (1 << field_from_numeric)):
+                        print(f"ERROR: Piece does not exist at that position")
+                        return
+
         #check if move legal and execute move
+                    
         legal_moves = self.succ.legalMoves(self.getBoard(), piece, field_from_numeric, self.getColor())
         for move in legal_moves:
             if move == field_to_numeric:
-                print(f"{piece}: {field_from_numeric} to {field_to_numeric}")
+                print(f"{self.getColor()} {piece}: {field_from_numeric} to {field_to_numeric}")
                 self.move(piece, field_from_numeric, field_to_numeric, self.getColor())
                 board.entireBoardPrinting()
+                return
         print(f"ERROR: Move not legal")
         
 
