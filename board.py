@@ -92,6 +92,7 @@ class Chessboard:
     #always carry piece char along and never add any additionals like '+' or 'x' for checks and takes
     
     def inputMove(self):
+        print("\n")
         move_from = input("Please input starting position: ")
         move_to = input("Please input where the piece goes: ")
         piece = None
@@ -105,7 +106,7 @@ class Chessboard:
             return
 
         #check if first char (piece) is valid
-        validChars = ["K", "Q", "R", "B", "N", "P"]
+        validChars = ['K', 'Q', 'R', 'B', 'N', 'P']
         for char in validChars:
             if char == move_from[0] and char == move_to[0]:
                 piece = char
@@ -134,11 +135,15 @@ class Chessboard:
         field_from_numeric = (7 - move_from_column + ord('a')) + (move_from_row * 8)
         field_to_numeric = (7 - move_to_column + ord('a')) + (move_to_row * 8)
 
-        legal_moves = self.succ.legalMoves(state, piece, field_from_numeric)
+        #legal_moves = self.succ.legalMoves(state, piece, field_from_numeric)
 
         print(f"{piece}: {field_from_numeric} to {field_to_numeric}")
 
+        self.move(piece, field_from_numeric, field_to_numeric, 1)
 
+        board.entireBoardPrinting()
+
+    
     def move(self, pieceChar, startField, endField, color):
         # switch cases checks which bitbboard will be changed due to the move
         if color == self.c_WHITE:
@@ -170,7 +175,7 @@ class Chessboard:
                 case 'K':
                     self.BLACK_KING = self.moveHelperFunction(self.BLACK_KING, startField, endField)
         
-    def moveHelperFunction(bitboard, startField, endField):
+    def moveHelperFunction(self, bitboard, startField, endField):
         piece = (bitboard >> startField) & 1
         bitboard = bitboard & ~(1 << startField)
 
@@ -178,7 +183,7 @@ class Chessboard:
         if moveDistance > 0:
             piece <<= moveDistance
         else:
-            piece >>= moveDistance
+            piece >>= abs(moveDistance)
         return bitboard | (piece << startField)
     
     def checkForTakes(self, endField, color): # This method checks wheteher or not a user attacks a piece of the enemy ort not.
@@ -226,7 +231,6 @@ class Chessboard:
 
 board = Chessboard() #create a new board object
 board.entireBoardPrinting()
-print("")
 
 for i in range(30):
     board.inputMove()
