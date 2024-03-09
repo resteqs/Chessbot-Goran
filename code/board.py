@@ -7,7 +7,7 @@
 
 import movements as movements
 import gameInput as gameInput
-from successor import SuccessorFunction
+import successor as successor
 
 #Die Klasse speichert den Zustand des Spiels. Es soll alle nötigen Bitboards selber bereitstellen. Es muss alle Bitboards selber berechenen können mit
 #entsprechenden Funktionen. 
@@ -20,7 +20,6 @@ class Chessboard:
     turn_Color = c_WHITE
 
     # Constructor - sets the default values for the board
-
     def __init__(self):
         self.WHITE_PAWNS = 0b0000000000000000000000000000000000000000000000001111111100000000
         self.WHITE_ROOKS = 0b0000000000000000000000000000000000000000000000000000000010000001
@@ -35,7 +34,10 @@ class Chessboard:
         self.BLACK_QUEEN = 0b0001000000000000000000000000000000000000000000000000000000000000
         self.BLACK_KING = 0b0000100000000000000000000000000000000000000000000000000000000000
 
-        self.succ = SuccessorFunction()
+        l_border = 0b1000000010000000100000001000000010000000100000001000000010000000
+        r_border = 0b0000000100000001000000010000000100000001000000010000000100000001
+        t_border = 0b1111111100000000000000000000000000000000000000000000000000000000
+        b_border = 0b0000000000000000000000000000000000000000000000000000000011111111
 
     # python automatically passes the object as an argument to the function so I need the extra parameter 'self'
     def boardPrinting(self, bitboard):
@@ -98,6 +100,32 @@ class Chessboard:
 
     def getColor(self):
         return self.turn_Color
+    
+    def calcBishopRayattacks(self, numerical_position):
+        rayattacks = 0
+
+        #NW ray
+        i = 1 << numerical_position
+        while i & self.t_border == 0 and i & self.l_border == 0:
+            i <<= 9
+            rayattacks = rayattacks | i
+        #NE ray
+        i = 1 << numerical_position
+        while i & self.t_border == 0 and i & self.r_border == 0:
+            i <<= 7
+            rayattacks = rayattacks | i
+        #SW ray
+        i = 1 << numerical_position
+        while i & self.b_border == 0 and i & self.l_border == 0:
+            i >>= 7
+            rayattacks = rayattacks | i
+        #SE ray
+        i = 1 << numerical_position
+        while i & self.b_border == 0 and i & self.r_border == 0:
+            i >>= 9
+            rayattacks = rayattacks | i
+    
+        print(bin(rayattacks))
 
     def test(self, i):
         knight = (self.WHITE_KNIGHTS >> i) & 1
