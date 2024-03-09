@@ -16,6 +16,14 @@ def inputMove(boardObject):
     #             castling                 #
     ########################################
 
+    #Check if user has castling Rights?
+    #Check if castle is possible. Checks, piece in between
+    #Perform castling
+    #Remove castling rights
+    
+
+
+
     # check if notation has correct length
     if len(move_from) != 3 or len(move_to) != 3:
         print(f"ERROR: Notation wrong")

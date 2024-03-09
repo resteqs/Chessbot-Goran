@@ -9,6 +9,9 @@ import movements as movements
 import gameInput as gameInput
 from successor import SuccessorFunction
 
+#Die Klasse speichert den Zustand des Spiels. Es soll alle nötigen Bitboards selber bereitstellen. Es muss alle Bitboards selber berechenen können mit
+#entsprechenden Funktionen. 
+#All Black, All Whiite, All pieces, Rays of Attacks...
 
 class Chessboard:
     c_WHITE = 1
