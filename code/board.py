@@ -5,8 +5,8 @@
 []
 """
 
-import movements
-import gameInput
+import movements as movements
+import gameInput as gameInput
 from successor import SuccessorFunction
 
 

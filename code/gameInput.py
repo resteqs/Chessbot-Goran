@@ -1,6 +1,8 @@
+
 # specific defined chess notation:
 # King K, Queen Q, Rook R, Bishop B, Knight N, Pawn P
 # always carry piece char along and never add any additionals like '+' or 'x' for checks and takes
+
 def inputMove(boardObject):
     print("\n")
     move_from = input("Please input starting position: ")
