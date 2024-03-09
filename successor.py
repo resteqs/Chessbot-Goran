@@ -28,20 +28,55 @@ class SuccessorFunction:
         if color == 1:  #white
             match piece:
                 case 'P':
-                    if numerical_position >= 8 and numerical_position <= 15:
+                    if numerical_position >= 8 and numerical_position <= 15: #double pawn push
                         if ((white_pieces | black_pieces) & (1 << numerical_position << 16) == 0):
                             legal_moves.append(numerical_position + 16)
-                    if numerical_position + 8 <= 63:
+                    if numerical_position + 8 <= 63: #single pawn push
                         if (white_pieces | black_pieces) & (1 << numerical_position << 8) == 0:
                             legal_moves.append(numerical_position + 8)
-                    if numerical_position + 8 <= 63 and numerical_position % 8 != 7:        
-                        if black_pieces & (1 << numerical_position << 9) != 0:
-                            legal_moves.append(numerical_position + 9)
-                    if numerical_position + 8 <= 63 and numerical_position % 8 != 0:
-                        if black_pieces & (1 << numerical_position << 7) != 0:
-                            legal_moves.append(numerical_position + 7)
+                        if numerical_position % 8 != 7: #left diagonal take
+                            if black_pieces & (1 << numerical_position << 9) != 0:
+                                legal_moves.append(numerical_position + 9)
+                        if numerical_position % 8 != 0: #right diagonal take
+                            if black_pieces & (1 << numerical_position << 7) != 0:
+                                legal_moves.append(numerical_position + 7)
 
+                case 'B':
+                    pass
+                case 'N':
+                    pass
+                case 'R':
+                    pass
+                case 'Q':
+                    pass
+                case 'K':
+                    pass
 
-                    
+        else:           #black
+            match piece:
+                case 'P':
+                    if numerical_position >= 48 and numerical_position <= 55: #double pawn push
+                        if ((white_pieces | black_pieces) & (1 << numerical_position >> 16) == 0):
+                            legal_moves.append(numerical_position - 16)
+                    if numerical_position - 8 >= 0: #single pawn push
+                        if (white_pieces | black_pieces) & (1 << numerical_position >> 8) == 0:
+                            legal_moves.append(numerical_position - 8)
+                        if numerical_position % 8 != 7: #left diagonal take
+                            if black_pieces & (1 << numerical_position >> 7) != 0:
+                                legal_moves.append(numerical_position - 7)
+                        if numerical_position % 8 != 0: #right diagonal take
+                            if black_pieces & (1 << numerical_position >> 9) != 0:
+                                legal_moves.append(numerical_position - 9)
+
+                case 'B':
+                    pass
+                case 'N':
+                    pass
+                case 'R':
+                    pass
+                case 'Q':
+                    pass
+                case 'K':
+                    pass
 
         return legal_moves
