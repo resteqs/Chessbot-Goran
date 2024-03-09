@@ -6,7 +6,9 @@
 """
 
 import movements
+import gameInput
 from successor import SuccessorFunction
+
 
 class Chessboard:
     c_WHITE = 1
@@ -14,292 +16,98 @@ class Chessboard:
 
     turn_Color = c_WHITE
 
-
-    #Constructor - sets the default values for the board
+    # Constructor - sets the default values for the board
 
     def __init__(self):
-        self.WHITE_PAWNS   = 0b0000000000000000000000000000000000000000000000001111111100000000
-        self.WHITE_ROOKS   = 0b0000000000000000000000000000000000000000000000000000000010000001
+        self.WHITE_PAWNS = 0b0000000000000000000000000000000000000000000000001111111100000000
+        self.WHITE_ROOKS = 0b0000000000000000000000000000000000000000000000000000000010000001
         self.WHITE_KNIGHTS = 0b0000000000000000000000000000000000000000000000000000000001000010
         self.WHITE_BISHOPS = 0b0000000000000000000000000000000000000000000000000000000000100100
-        self.WHITE_QUEEN   = 0b0000000000000000000000000000000000000000000000000000000000010000
-        self.WHITE_KING    = 0b0000000000000000000000000000000000000000000000000000000000001000
-        self.BLACK_PAWNS   = 0b0000000011111111000000000000000000000000000000000000000000000000
-        self.BLACK_ROOKS   = 0b1000000100000000000000000000000000000000000000000000000000000000
+        self.WHITE_QUEEN = 0b0000000000000000000000000000000000000000000000000000000000010000
+        self.WHITE_KING = 0b0000000000000000000000000000000000000000000000000000000000001000
+        self.BLACK_PAWNS = 0b0000000011111111000000000000000000000000000000000000000000000000
+        self.BLACK_ROOKS = 0b1000000100000000000000000000000000000000000000000000000000000000
         self.BLACK_KNIGHTS = 0b0100001000000000000000000000000000000000000000000000000000000000
         self.BLACK_BISHOPS = 0b0010010000000000000000000000000000000000000000000000000000000000
-        self.BLACK_QUEEN   = 0b0001000000000000000000000000000000000000000000000000000000000000
-        self.BLACK_KING    = 0b0000100000000000000000000000000000000000000000000000000000000000
+        self.BLACK_QUEEN = 0b0001000000000000000000000000000000000000000000000000000000000000
+        self.BLACK_KING = 0b0000100000000000000000000000000000000000000000000000000000000000
 
         self.succ = SuccessorFunction()
 
-
-    def boardPrinting(self, bitboard): #python automatically passes the object as an argument to the function so I need the extra parameter 'self'
-        for bit in range(64, 0, -1): #iterate from 64 (inclusive) to 0(exclusive) with step -1
+    # python automatically passes the object as an argument to the function so I need the extra parameter 'self'
+    def boardPrinting(self, bitboard):
+        for bit in range(64, 0, -1):  # iterate from 64 (inclusive) to 0(exclusive) with step -1
             if bit % 8 == 0:
                 print("")
-            curr_bit = (bitboard >> bit-1) & 1 #Performs bitshifting on the bitboard and checks wheter LSB is 1 or 0. & is a binary AND operator 1&1 = 1, 0&1 = 0
-            if(curr_bit == 1):
-                print(curr_bit, end = " ")
+            # Performs bitshifting on the bitboard and checks wheter LSB is 1 or 0. & is a binary AND operator 1&1 = 1, 0&1 = 0
+            curr_bit = (bitboard >> bit-1) & 1
+            if (curr_bit == 1):
+                print(curr_bit, end=" ")
             else:
-                print("·", end = " ")
+                print("·", end=" ")
 
-
-    #prints the entire chess board
+    # prints the entire chess board
 
     def entireBoardPrinting(self):
         entireBoard = self.WHITE_PAWNS | self.WHITE_BISHOPS | self.WHITE_KING | self.WHITE_KNIGHTS | self.WHITE_ROOKS | self.WHITE_QUEEN | self.BLACK_PAWNS | self.BLACK_BISHOPS | self.BLACK_KNIGHTS | self.BLACK_KING | self.BLACK_QUEEN | self.BLACK_ROOKS
-        for bit in range (64, 0, -1):
+        for bit in range(64, 0, -1):
             if bit % 8 == 0:
                 print("")
             curr_bit = (entireBoard >> bit-1) & 1
-            if(curr_bit == 1):
-                if(curr_bit == (self.WHITE_PAWNS >> bit - 1) & 1 ):
-                    print("P", end = " ")
-                elif(curr_bit == (self.WHITE_BISHOPS >> bit - 1) & 1):
-                    print("B", end = " ")
-                elif(curr_bit == (self.WHITE_KNIGHTS >> bit - 1) & 1):
-                    print("N", end = " ")
-                elif(curr_bit == (self.WHITE_ROOKS >> bit - 1) & 1):
-                    print("R", end = " ")
-                elif(curr_bit == (self.WHITE_QUEEN >> bit - 1) & 1):
-                    print("Q", end = " ")
-                elif(curr_bit == (self.WHITE_KING >> bit - 1) & 1):       
-                    print("K", end = " ")
-                elif(curr_bit == (self.BLACK_PAWNS >> bit - 1) & 1):
-                    print("p", end = " ")
-                elif(curr_bit == (self.BLACK_BISHOPS >> bit - 1) & 1):
-                    print("b", end = " ")
-                elif(curr_bit == (self.BLACK_KNIGHTS >> bit - 1) & 1):
-                    print("n", end = " ")
-                elif(curr_bit == (self.BLACK_ROOKS >> bit - 1) & 1):
-                    print("r", end = " ")
-                elif(curr_bit == (self.BLACK_QUEEN >> bit - 1) & 1):
-                    print("q", end = " ")
-                else: #else Black King
-                    print("k", end = " ")
+            if (curr_bit == 1):
+                if (curr_bit == (self.WHITE_PAWNS >> bit - 1) & 1):
+                    print("P", end=" ")
+                elif (curr_bit == (self.WHITE_BISHOPS >> bit - 1) & 1):
+                    print("B", end=" ")
+                elif (curr_bit == (self.WHITE_KNIGHTS >> bit - 1) & 1):
+                    print("N", end=" ")
+                elif (curr_bit == (self.WHITE_ROOKS >> bit - 1) & 1):
+                    print("R", end=" ")
+                elif (curr_bit == (self.WHITE_QUEEN >> bit - 1) & 1):
+                    print("Q", end=" ")
+                elif (curr_bit == (self.WHITE_KING >> bit - 1) & 1):
+                    print("K", end=" ")
+                elif (curr_bit == (self.BLACK_PAWNS >> bit - 1) & 1):
+                    print("p", end=" ")
+                elif (curr_bit == (self.BLACK_BISHOPS >> bit - 1) & 1):
+                    print("b", end=" ")
+                elif (curr_bit == (self.BLACK_KNIGHTS >> bit - 1) & 1):
+                    print("n", end=" ")
+                elif (curr_bit == (self.BLACK_ROOKS >> bit - 1) & 1):
+                    print("r", end=" ")
+                elif (curr_bit == (self.BLACK_QUEEN >> bit - 1) & 1):
+                    print("q", end=" ")
+                else:  # else Black King
+                    print("k", end=" ")
             else:
-                print("·", end = " ")
+                print("·", end=" ")
 
     def getBoard(self):
-        all_bitboards = [self.WHITE_PAWNS, self.WHITE_BISHOPS, self.WHITE_KNIGHTS, self.WHITE_ROOKS, self.WHITE_QUEEN, self.WHITE_KING, self.BLACK_PAWNS, self.BLACK_BISHOPS, self.BLACK_KNIGHTS, self.BLACK_ROOKS, self.BLACK_QUEEN, self.BLACK_KING]
+        all_bitboards = [self.WHITE_PAWNS, self.WHITE_BISHOPS, self.WHITE_KNIGHTS, self.WHITE_ROOKS, self.WHITE_QUEEN, self.WHITE_KING,
+                         self.BLACK_PAWNS, self.BLACK_BISHOPS, self.BLACK_KNIGHTS, self.BLACK_ROOKS, self.BLACK_QUEEN, self.BLACK_KING]
         return all_bitboards
 
     def switchTurn(self):
         if self.turn_Color == self.c_WHITE:
-            self.turn_Color == self.c_BLACK
+            self.turn_Color = self.c_BLACK
         else:
             self.turn_Color = self.c_WHITE
 
     def getColor(self):
         return self.turn_Color
 
-    #specific defined chess notation:
-    #King K, Queen Q, Rook R, Bishop B, Knight N, Pawn P
-    #always carry piece char along and never add any additionals like '+' or 'x' for checks and takes
-    
-    def inputMove(self):
-        print("\n")
-        move_from = input("Please input starting position: ")
-        move_to = input("Please input where the piece goes: ")
-        piece = None
-
-        #TODO: check if move is legal
-        #checking if notation is correct is implemented
-
-        ########################################
-        #             castling                 #
-        ########################################
-        
-
-        #check if notation has correct length
-        if len(move_from) != 3 or len(move_to) != 3:
-            print(f"ERROR: Notation wrong")
-            return
-
-        #check if first char (piece) is valid
-        validChars = ['K', 'Q', 'R', 'B', 'N', 'P']
-        for char in validChars:
-            if char == move_from[0] and char == move_to[0]:
-                piece = char
-        if piece is None:
-            print(f"ERROR: Notation wrong or piece moved not the same")
-            return
-        
-        #check if second char (column) is valid
-        move_from_column = ord(move_from[1])
-        move_to_column = ord(move_to[1])
-        if not(move_from_column >= 97 and move_from_column <= 104 and move_to_column >= 97 and move_to_column <= 104):
-            print(f"ERROR: Notation wrong")
-            return
-        
-        #check if third char (row) is valid, if char is a digit
-        if not(move_from[2].isdigit() and move_to[2].isdigit()):
-            print(f"ERROR: Notation wrong")
-            return
-        move_from_row = int(move_from[2])-1
-        move_to_row = int(move_to[2])-1
-        #check if third char (row) is valid, if char is in valid range
-        if not(move_from_row >= 0 and move_from_row <= 7 and move_to_row >= 0 and move_to_row <= 7):
-            print(f"ERROR: Notation wrong")
-            return
-        
-        #calculate numeric positions, see FelderBitNummern.png
-        field_from_numeric = (7 - move_from_column + ord('a')) + (move_from_row * 8)
-        field_to_numeric = (7 - move_to_column + ord('a')) + (move_to_row * 8)
-
-        #check if the piece actually exists on that square
-        all_bitboards = self.getBoard()
-        if self.getColor() == self.c_WHITE:
-            match piece:
-                case 'P':
-                    if not((1 << field_from_numeric) & all_bitboards[0] == (1 << field_from_numeric)):
-                        print(f"ERROR: Piece does not exist at that position")
-                        return
-                case 'B':
-                    if not((1 << field_from_numeric) & all_bitboards[1] == (1 << field_from_numeric)):
-                        print(f"ERROR: Piece does not exist at that position")
-                        return
-                case 'N':
-                    if not((1 << field_from_numeric) & all_bitboards[2] == (1 << field_from_numeric)):
-                        print(f"ERROR: Piece does not exist at that position")
-                        return
-                case 'R':
-                    if not((1 << field_from_numeric) & all_bitboards[3] == (1 << field_from_numeric)):
-                        print(f"ERROR: Piece does not exist at that position")
-                        return
-                case 'Q':
-                    if not((1 << field_from_numeric) & all_bitboards[4] == (1 << field_from_numeric)):
-                        print(f"ERROR: Piece does not exist at that position")
-                        return
-                case 'K':
-                    if not((1 << field_from_numeric) & all_bitboards[5] == (1 << field_from_numeric)):
-                        print(f"ERROR: Piece does not exist at that position")
-                        return
-        else:
-            match piece:
-                case 'P':
-                    if not((1 << field_from_numeric) & all_bitboards[6] == (1 << field_from_numeric)):
-                        print(f"ERROR: Piece does not exist at that position")
-                        return
-                case 'B':
-                    if not((1 << field_from_numeric) & all_bitboards[7] == (1 << field_from_numeric)):
-                        print(f"ERROR: Piece does not exist at that position")
-                        return
-                case 'N':
-                    if not((1 << field_from_numeric) & all_bitboards[8] == (1 << field_from_numeric)):
-                        print(f"ERROR: Piece does not exist at that position")
-                        return
-                case 'R':
-                    if not((1 << field_from_numeric) & all_bitboards[9] == (1 << field_from_numeric)):
-                        print(f"ERROR: Piece does not exist at that position")
-                        return
-                case 'Q':
-                    if not((1 << field_from_numeric) & all_bitboards[10] == (1 << field_from_numeric)):
-                        print(f"ERROR: Piece does not exist at that position")
-                        return
-                case 'K':
-                    if not((1 << field_from_numeric) & all_bitboards[11] == (1 << field_from_numeric)):
-                        print(f"ERROR: Piece does not exist at that position")
-                        return
-
-        #check if move legal and execute move
-                    
-        legal_moves = self.succ.legalMoves(self.getBoard(), piece, field_from_numeric, self.getColor())
-        for move in legal_moves:
-            if move == field_to_numeric:
-                print(f"{self.getColor()} {piece}: {field_from_numeric} to {field_to_numeric}")
-                self.move(piece, field_from_numeric, field_to_numeric, self.getColor())
-                board.entireBoardPrinting()
-                return
-        print(f"ERROR: Move not legal")
-        
-
-
-    def move(self, pieceChar, startField, endField, color):
-        # switch cases checks which bitbboard will be changed due to the move
-        if color == self.c_WHITE:
-            match pieceChar:
-                case 'P':
-                    self.WHITE_PAWNS = self.moveHelperFunction(self.WHITE_PAWNS, startField, endField)
-                case 'N':
-                    self.WHITE_KNIGHTS = self.moveHelperFunction(self.WHITE_KNIGHTS, startField, endField)
-                case 'B':
-                    self.WHITE_BISHOPS = self.moveHelperFunction(self.WHITE_BISHOPS, startField, endField)
-                case 'R':
-                    self.WHITE_ROOKS = self.moveHelperFunction(self.WHITE_ROOKS, startField, endField)
-                case 'Q':
-                    self.WHITE_QUEEN = self.moveHelperFunction(self.WHITE_QUEEN, startField, endField)
-                case 'K':
-                    self.WHITE_KING = self.moveHelperFunction(self.WHITE_KING, startField, endField)
-        else:
-             match pieceChar:
-                case 'P':
-                    self.BLACK_PAWNS = self.moveHelperFunction(self.BLACK_PAWNS, startField, endField)
-                case 'N':
-                    self.BLACK_KNIGHTS = self.moveHelperFunction(self.BLACK_KNIGHTS, startField, endField)
-                case 'B':
-                    self.BLACK_BISHOPS = self.moveHelperFunction(self.BLACK_BISHOPS, startField, endField)
-                case 'R':
-                    self.BLACK_ROOKS = self.moveHelperFunction(self.BLACK_ROOKS, startField, endField)
-                case 'Q':
-                    self.BLACK_QUEEN = self.moveHelperFunction(self.BLACK_QUEEN, startField, endField)
-                case 'K':
-                    self.BLACK_KING = self.moveHelperFunction(self.BLACK_KING, startField, endField)
-        self.checkForTakes(endField, color)
-        
-        
-    def moveHelperFunction(self, bitboard, startField, endField):
-        bitboard = bitboard & ~(1 << startField)
-        return bitboard | (1 << endField)
-        
-    
-    def checkForTakes(self, endField, color): # This method checks wheteher or not a user attacks a piece of the enemy ort not.
-        if color == self.c_WHITE:
-            if (self.BLACK_PAWNS >> endField) & 1: #Checks if a figure is at postion endfield
-                self.BLACK_PAWNS = self.BLACK_PAWNS & ~(1 << endField) #If so the figure gets removed
-            elif (self.BLACK_ROOKS >> endField) & 1:
-                self.BLACK_ROOKS = self.BLACK_ROOKS & ~(1 << endField)
-            elif (self.BLACK_KNIGHTS >> endField) & 1:
-                self.BLACK_KNIGHTS = self.BLACK_KNIGHTS & ~(1 << endField)
-            elif (self.BLACK_BISHOPS >> endField) & 1:
-                self.BLACK_BISHOPS = self.BLACK_BISHOPS & ~(1 << endField)
-            elif (self.BLACK_QUEEN >> endField) & 1:
-                 self.BLACK_QUEEN = self.BLACK_QUEEN & ~(1 << endField)
-            elif (self.BLACK_KING >> endField) & 1:
-                self.BLACK_KING = self.BLACK_KING & ~(1 << endField)
-        else:
-            if (self.WHITE_PAWNS >> endField) & 1:
-             self.WHITE_PAWNS = self.WHITE_PAWNS & ~(1 << endField)
-            elif (self.WHITE_ROOKS >> endField) & 1:
-                self.WHITE_ROOKS = self.WHITE_ROOKS & ~(1 << endField)
-            elif (self.WHITE_KNIGHTS >> endField) & 1:
-             self.WHITE_KNIGHTS = self.WHITE_KNIGHTS & ~(1 << endField)
-            elif (self.WHITE_BISHOPS >> endField) & 1:
-             self.WHITE_BISHOPS = self.WHITE_BISHOPS & ~(1 << endField)
-            elif (self.WHITE_QUEEN >> endField) & 1:
-                self.WHITE_QUEEN = self.WHITE_QUEEN & ~(1 << endField)
-            elif (self.WHITE_KING >> endField) & 1:
-                self.WHITE_KING = self.WHITE_KING & ~(1 << endField)
-
-
-    
-    
     def test(self, i):
         knight = (self.WHITE_KNIGHTS >> i) & 1
         self.WHITE_KNIGHTS = self.WHITE_KNIGHTS & ~(1 << i)
         knight = knight << 8
         self.WHITE_KNIGHTS = self.WHITE_KNIGHTS | (knight << i)
 
-
         self.boardPrinting(self.WHITE_KNIGHTS)
 
 
-
-
-board = Chessboard() #create a new board object
+board = Chessboard()  # create a new board object
 board.entireBoardPrinting()
 board.getBoard()
 
 for i in range(30):
-    board.inputMove()
+    gameInput.inputMove(board)
