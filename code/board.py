@@ -149,11 +149,18 @@ class Chessboard:
             rayattacks = rayattacks | i
         return rayattacks
     
+    def calcVerticalNorthRayattacks(self, numerical_position):
+         i = 1 << numerical_position
+         while i & self.T_BORDER == 0:
+            i <<= 8
+            rayattacks = rayattacks | i
+         return rayattacks
+    
     def calcKnightAttacks(self, numerical_position):
         knightattacks = 0
         
         return knightattacks
-
+    
 
     def test(self, i):
         knight = (self.WHITE_KNIGHTS >> i) & 1
