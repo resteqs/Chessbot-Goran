@@ -15,6 +15,16 @@ class Chessboard:
 
     turn_Color = c_WHITE
 
+    L_BORDER = 0b1000000010000000100000001000000010000000100000001000000010000000 #equals A file
+    R_BORDER = 0b0000000100000001000000010000000100000001000000010000000100000001 #equals H file
+    T_BORDER = 0b1111111100000000000000000000000000000000000000000000000000000000 #equals rank 8
+    B_BORDER = 0b0000000000000000000000000000000000000000000000000000000011111111 #equals rank 1
+
+    B_FILE = 0b0100000001000000010000000100000001000000010000000100000001000000
+    G_FILE = 0b0000001000000010000000100000001000000010000000100000001000000010
+    RANK_2 = 0b0000000000000000000000000000000000000000000000001111111100000000
+    RANK_7 = 0b0000000011111111000000000000000000000000000000000000000000000000
+
     # Constructor - sets the default values for the board
     def __init__(self):
         self.WHITE_PAWNS = 0b0000000000000000000000000000000000000000000000001111111100000000
@@ -29,16 +39,6 @@ class Chessboard:
         self.BLACK_BISHOPS = 0b0010010000000000000000000000000000000000000000000000000000000000
         self.BLACK_QUEEN = 0b0001000000000000000000000000000000000000000000000000000000000000
         self.BLACK_KING = 0b0000100000000000000000000000000000000000000000000000000000000000
-
-        self.L_BORDER = 0b1000000010000000100000001000000010000000100000001000000010000000 #equals A file
-        self.R_BORDER = 0b0000000100000001000000010000000100000001000000010000000100000001 #equals H file
-        self.T_BORDER = 0b1111111100000000000000000000000000000000000000000000000000000000 #equals rank 8
-        self.B_BORDER = 0b0000000000000000000000000000000000000000000000000000000011111111 #equals rank 1
-
-        self.AB_FILE = 0b1100000011000000110000001100000011000000110000001100000011000000
-        self.GH_FILE = 0b0000001100000011000000110000001100000011000000110000001100000011
-        self.RANK_12 = 0b0000000000000000000000000000000000000000000000001111111111111111
-        self.RANK_87 = 0b1111111111111111000000000000000000000000000000000000000000000000
 
     # python automatically passes the object as an argument to the function so I need the extra parameter 'self'
     def boardPrinting(self, bitboard):
@@ -149,6 +149,7 @@ class Chessboard:
         while i & self.L_BORDER == 0:
             i <<= 1
             rayattacks = rayattacks | i
+        print(rayattacks)
         return rayattacks
     
     def calcSquareAttacks(self, numerical_position): #basically king attacks
@@ -164,17 +165,29 @@ class Chessboard:
         squareattacks = squareattacks | (pos & ~(self.T_BORDER | self.R_BORDER)) << 7 #NoEa
         return squareattacks
     
+    def calcPawnAttacks(self, numerical_position, color): #pawn attacks, independant if capturing or moving
+        pawnattacks = 0
+        pos = 1 << numerical_position 
+        if color == self.c_WHITE:
+            pass
+        else:
+            pass
+
+        print(pawnattacks)
+        return pawnattacks
+
+    
     def calcKnightAttacks(self, numerical_position): #knight attacks
         knightattacks = 0
         pos = 1 << numerical_position
-        knightattacks = knightattacks | (pos & ~(self.R_BORDER | self.RANK_87)) << 15 #NoNoEa
-        knightattacks = knightattacks | (pos & ~(self.L_BORDER | self.RANK_87)) << 17 #NoNoWe
-        knightattacks = knightattacks | (pos & ~(self.T_BORDER | self.AB_FILE)) << 10 #NoWeWe
-        knightattacks = knightattacks | (pos & ~(self.B_BORDER | self.AB_FILE)) >> 6  #SoWeWe
-        knightattacks = knightattacks | (pos & ~(self.L_BORDER | self.RANK_12)) >> 15 #SoSoWe
-        knightattacks = knightattacks | (pos & ~(self.R_BORDER | self.RANK_12)) >> 17 #SoSoEa
-        knightattacks = knightattacks | (pos & ~(self.B_BORDER | self.GH_FILE)) >> 10 #SoEaEa
-        knightattacks = knightattacks | (pos & ~(self.T_BORDER | self.GH_FILE)) << 6  #NoEaEa
+        knightattacks = knightattacks | (pos & ~(self.R_BORDER | self.RANK_7 | self.T_BORDER)) << 15 #NoNoEa
+        knightattacks = knightattacks | (pos & ~(self.L_BORDER | self.RANK_7 | self.T_BORDER)) << 17 #NoNoWe
+        knightattacks = knightattacks | (pos & ~(self.T_BORDER | self.B_FILE | self.L_BORDER)) << 10 #NoWeWe
+        knightattacks = knightattacks | (pos & ~(self.B_BORDER | self.B_FILE | self.L_BORDER)) >> 6  #SoWeWe
+        knightattacks = knightattacks | (pos & ~(self.L_BORDER | self.RANK_2 | self.B_BORDER)) >> 15 #SoSoWe
+        knightattacks = knightattacks | (pos & ~(self.R_BORDER | self.RANK_2 | self.B_BORDER)) >> 17 #SoSoEa
+        knightattacks = knightattacks | (pos & ~(self.B_BORDER | self.G_FILE | self.R_BORDER)) >> 10 #SoEaEa
+        knightattacks = knightattacks | (pos & ~(self.T_BORDER | self.G_FILE | self.R_BORDER)) << 6  #NoEaEa
         return knightattacks
 
 
@@ -194,7 +207,7 @@ board.getBoard()
 
 for i in range(15):
     num = int(input("Square: "))
-    board.calcVerticalRayattacks(num)
+    board.calcKnightattacks(num)
 
 for i in range(30):
     gameInput.inputMove(board)
