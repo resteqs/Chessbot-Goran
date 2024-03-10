@@ -1,9 +1,5 @@
 
-"""
-[x] Eine Methode die Eingabe vom USER holt und entscheidet welche FIGUR bewegt wurde und ändert die Bitmap
-[] Eine M
-[]
-"""
+#TODO: move legality, filtering illegal moves from attackpatterns generated on a imaginary empty board
 
 import movements as movements
 import gameInput as gameInput
@@ -57,7 +53,6 @@ class Chessboard:
                 print("·", end=" ")
 
     # prints the entire chess board
-
     def entireBoardPrinting(self):
         entireBoard = self.WHITE_PAWNS | self.WHITE_BISHOPS | self.WHITE_KING | self.WHITE_KNIGHTS | self.WHITE_ROOKS | self.WHITE_QUEEN | self.BLACK_PAWNS | self.BLACK_BISHOPS | self.BLACK_KNIGHTS | self.BLACK_KING | self.BLACK_QUEEN | self.BLACK_ROOKS
         for bit in range(64, 0, -1):
@@ -167,7 +162,6 @@ class Chessboard:
         squareattacks = squareattacks | (pos & ~(self.B_BORDER | self.R_BORDER)) >> 9 #SoEa
         squareattacks = squareattacks | (pos & ~self.R_BORDER) >> 1 #Ea
         squareattacks = squareattacks | (pos & ~(self.T_BORDER | self.R_BORDER)) << 7 #NoEa
-        print(squareattacks)
         return squareattacks
     
     def calcKnightAttacks(self, numerical_position): #knight attacks
