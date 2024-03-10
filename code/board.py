@@ -7,7 +7,7 @@
 
 import movements as movements
 import gameInput as gameInput
-from successor import SuccessorFunction
+import successor as successor
 
 #Die Klasse speichert den Zustand des Spiels. Es soll alle nötigen Bitboards selber bereitstellen. Es muss alle Bitboards selber berechenen können mit
 #entsprechenden Funktionen. 
@@ -20,7 +20,6 @@ class Chessboard:
     turn_Color = c_WHITE
 
     # Constructor - sets the default values for the board
-
     def __init__(self):
         self.WHITE_PAWNS = 0b0000000000000000000000000000000000000000000000001111111100000000
         self.WHITE_ROOKS = 0b0000000000000000000000000000000000000000000000000000000010000001
@@ -35,7 +34,10 @@ class Chessboard:
         self.BLACK_QUEEN = 0b0001000000000000000000000000000000000000000000000000000000000000
         self.BLACK_KING = 0b0000100000000000000000000000000000000000000000000000000000000000
 
-        self.succ = SuccessorFunction()
+        self.L_BORDER = 0b1000000010000000100000001000000010000000100000001000000010000000
+        self.R_BORDER = 0b0000000100000001000000010000000100000001000000010000000100000001
+        self.T_BORDER = 0b1111111100000000000000000000000000000000000000000000000000000000
+        self.B_BORDER = 0b0000000000000000000000000000000000000000000000000000000011111111
 
     # python automatically passes the object as an argument to the function so I need the extra parameter 'self'
     def boardPrinting(self, bitboard):
@@ -98,6 +100,60 @@ class Chessboard:
 
     def getColor(self):
         return self.turn_Color
+    
+    def calcDiagRayattacks(self, numerical_position):
+        rayattacks = 0
+        #NW ray
+        i = 1 << numerical_position
+        while i & self.T_BORDER == 0 and i & self.L_BORDER == 0:
+            i <<= 9
+            rayattacks = rayattacks | i
+        #NE ray
+        i = 1 << numerical_position
+        while i & self.T_BORDER == 0 and i & self.R_BORDER == 0:
+            i <<= 7
+            rayattacks = rayattacks | i
+        #SW ray
+        i = 1 << numerical_position
+        while i & self.B_BORDER == 0 and i & self.L_BORDER == 0:
+            i >>= 7
+            rayattacks = rayattacks | i
+        #SE ray
+        i = 1 << numerical_position
+        while i & self.B_BORDER == 0 and i & self.R_BORDER == 0:
+            i >>= 9
+            rayattacks = rayattacks | i
+        return rayattacks
+    
+    def calcVerticalRayattacks(self, numerical_position):
+        rayattacks = 0
+        #N ray
+        i = 1 << numerical_position
+        while i & self.T_BORDER == 0:
+            i <<= 8
+            rayattacks = rayattacks | i
+        #E ray
+        i = 1 << numerical_position
+        while i & self.R_BORDER == 0:
+            i >>= 1
+            rayattacks = rayattacks | i
+        #S ray
+        i = 1 << numerical_position
+        while i & self.B_BORDER == 0:
+            i >>= 8
+            rayattacks = rayattacks | i
+        #W ray
+        i = 1 << numerical_position
+        while i & self.L_BORDER == 0:
+            i <<= 1
+            rayattacks = rayattacks | i
+        return rayattacks
+    
+    def calcKnightAttacks(self, numerical_position):
+        knightattacks = 0
+        
+        return knightattacks
+
 
     def test(self, i):
         knight = (self.WHITE_KNIGHTS >> i) & 1
@@ -111,6 +167,11 @@ class Chessboard:
 board = Chessboard()  # create a new board object
 board.entireBoardPrinting()
 board.getBoard()
+
+
+for i in range(15):
+    num = int(input("Square: "))
+    board.calcVerticalRayattacks(num)
 
 for i in range(30):
     gameInput.inputMove(board)
