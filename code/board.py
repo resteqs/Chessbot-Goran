@@ -41,6 +41,8 @@ class Chessboard:
 
         self.AB_FILE = 0b1100000011000000110000001100000011000000110000001100000011000000
         self.GH_FILE = 0b0000001100000011000000110000001100000011000000110000001100000011
+        self.RANK_12 = 0b0000000000000000000000000000000000000000000000001111111111111111
+        self.RANK_87 = 0b1111111111111111000000000000000000000000000000000000000000000000
 
     # python automatically passes the object as an argument to the function so I need the extra parameter 'self'
     def boardPrinting(self, bitboard):
@@ -104,59 +106,81 @@ class Chessboard:
     def getColor(self):
         return self.turn_Color
     
-    def calcDiagRayattacks(self, numerical_position):
+    def calcDiagRayattacks(self, numerical_position): #basically bishop attacks
         rayattacks = 0
+        pos = 1 << numerical_position
         #NW ray
-        i = 1 << numerical_position
+        i = pos
         while i & self.T_BORDER == 0 and i & self.L_BORDER == 0:
             i <<= 9
             rayattacks = rayattacks | i
         #NE ray
-        i = 1 << numerical_position
+        i = pos
         while i & self.T_BORDER == 0 and i & self.R_BORDER == 0:
             i <<= 7
             rayattacks = rayattacks | i
         #SW ray
-        i = 1 << numerical_position
+        i = pos
         while i & self.B_BORDER == 0 and i & self.L_BORDER == 0:
             i >>= 7
             rayattacks = rayattacks | i
         #SE ray
-        i = 1 << numerical_position
+        i = pos
         while i & self.B_BORDER == 0 and i & self.R_BORDER == 0:
             i >>= 9
             rayattacks = rayattacks | i
         return rayattacks
     
-    def calcVerticalRayattacks(self, numerical_position):
+    def calcVerticalRayattacks(self, numerical_position): #basically rook attacks
         rayattacks = 0
+        pos = 1 << numerical_position
         #N ray
-        i = 1 << numerical_position
+        i = pos
         while i & self.T_BORDER == 0:
             i <<= 8
             rayattacks = rayattacks | i
         #E ray
-        i = 1 << numerical_position
+        i = pos
         while i & self.R_BORDER == 0:
             i >>= 1
             rayattacks = rayattacks | i
         #S ray
-        i = 1 << numerical_position
+        i = pos
         while i & self.B_BORDER == 0:
             i >>= 8
             rayattacks = rayattacks | i
         #W ray
-        i = 1 << numerical_position
+        i = pos
         while i & self.L_BORDER == 0:
             i <<= 1
             rayattacks = rayattacks | i
         return rayattacks
     
-    def calcKnightAttacks(self, numerical_position):
+    def calcSquareAttacks(self, numerical_position): #basically king attacks
+        squareattacks = 0
+        pos = 1 << numerical_position
+        squareattacks = squareattacks | (pos & ~self.T_BORDER) << 8 #No
+        squareattacks = squareattacks | (pos & ~(self.T_BORDER | self.L_BORDER)) << 9 #NoWe
+        squareattacks = squareattacks | (pos & ~self.L_BORDER) << 1 #We
+        squareattacks = squareattacks | (pos & ~(self.B_BORDER | self.L_BORDER)) >> 7 #SoWe
+        squareattacks = squareattacks | (pos & ~self.B_BORDER) >> 8 #So
+        squareattacks = squareattacks | (pos & ~(self.B_BORDER | self.R_BORDER)) >> 9 #SoEa
+        squareattacks = squareattacks | (pos & ~self.R_BORDER) >> 1 #Ea
+        squareattacks = squareattacks | (pos & ~(self.T_BORDER | self.R_BORDER)) << 7 #NoEa
+        print(squareattacks)
+        return squareattacks
+    
+    def calcKnightAttacks(self, numerical_position): #knight attacks
         knightattacks = 0
-
-        #! gotta implement knight moves!
-
+        pos = 1 << numerical_position
+        knightattacks = knightattacks | (pos & ~(self.R_BORDER | self.RANK_87)) << 15 #NoNoEa
+        knightattacks = knightattacks | (pos & ~(self.L_BORDER | self.RANK_87)) << 17 #NoNoWe
+        knightattacks = knightattacks | (pos & ~(self.T_BORDER | self.AB_FILE)) << 10 #NoWeWe
+        knightattacks = knightattacks | (pos & ~(self.B_BORDER | self.AB_FILE)) >> 6  #SoWeWe
+        knightattacks = knightattacks | (pos & ~(self.L_BORDER | self.RANK_12)) >> 15 #SoSoWe
+        knightattacks = knightattacks | (pos & ~(self.R_BORDER | self.RANK_12)) >> 17 #SoSoEa
+        knightattacks = knightattacks | (pos & ~(self.B_BORDER | self.GH_FILE)) >> 10 #SoEaEa
+        knightattacks = knightattacks | (pos & ~(self.T_BORDER | self.GH_FILE)) << 6  #NoEaEa
         return knightattacks
 
 
