@@ -207,7 +207,7 @@ board.getBoard()
 
 for i in range(15):
     num = int(input("Square: "))
-    board.calcKnightattacks(num)
+    board.calcKnightAttacks(num)
 
 for i in range(30):
     gameInput.inputMove(board)

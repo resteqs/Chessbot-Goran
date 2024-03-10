@@ -4,16 +4,7 @@ import board
 
 gameState = board.Chessboard()
 
-
-def __init__(self):
-
-    # init magnitudes, magX
-
-    return
-
-
 # heuristic megafunction
-
 def gogos_little_brain(gameState: board.Chessboard):
     return difference_of_pieces(gameState) + piece_tables(gameState)
 
