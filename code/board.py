@@ -189,7 +189,7 @@ class Chessboard:
         knightattacks = knightattacks | (pos & ~(self.B_BORDER | self.G_FILE | self.R_BORDER)) >> 10 #SoEaEa
         knightattacks = knightattacks | (pos & ~(self.T_BORDER | self.G_FILE | self.R_BORDER)) << 6  #NoEaEa
         return knightattacks
-
+    
 
     def test(self, i):
         knight = (self.WHITE_KNIGHTS >> i) & 1
