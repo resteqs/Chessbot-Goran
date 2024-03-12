@@ -169,9 +169,15 @@ class Chessboard:
         pawnattacks = 0
         pos = 1 << numerical_position 
         if color == self.c_WHITE:
-            pass
+            pawnattacks = pawnattacks | (pos & self.RANK_2) << 16 #double push
+            pawnattacks = pawnattacks | (pos & ~self.T_BORDER) << 8 #single push
+            pawnattacks = pawnattacks | (pos & ~(self.L_BORDER | self.T_BORDER)) << 9 #left diagonal capture
+            pawnattacks = pawnattacks | (pos & ~(self.R_BORDER | self.T_BORDER)) << 7 #right diagonal capture
         else:
-            pass
+            pawnattacks = pawnattacks | (pos & self.RANK_7) >> 16 #double push
+            pawnattacks = pawnattacks | (pos & ~self.B_BORDER) >> 8 #single push
+            pawnattacks = pawnattacks | (pos & ~(self.L_BORDER | self.B_BORDER)) >> 7 #left diagonal capture
+            pawnattacks = pawnattacks | (pos & ~(self.R_BORDER | self.B_BORDER)) >> 9 #right diagonal capture
 
         print(pawnattacks)
         return pawnattacks
