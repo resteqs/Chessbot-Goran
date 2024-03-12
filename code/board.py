@@ -40,9 +40,8 @@ class Chessboard:
         self.BLACK_QUEEN = 0b0001000000000000000000000000000000000000000000000000000000000000
         self.BLACK_KING = 0b0000100000000000000000000000000000000000000000000000000000000000
 
-    # python automatically passes the object as an argument to the function so I need the extra parameter 'self'
     def boardPrinting(self, bitboard):
-        for bit in range(64, 0, -1):  # iterate from 64 (inclusive) to 0(exclusive) with step -1
+        for bit in range(64, 0, -1):  # iterate from 64 (inclusive) to 0 (exclusive) with step -1
             if bit % 8 == 0:
                 print("")
             # Performs bitshifting on the bitboard and checks wheter LSB is 1 or 0. & is a binary AND operator 1&1 = 1, 0&1 = 0
@@ -91,6 +90,31 @@ class Chessboard:
         all_bitboards = [self.WHITE_PAWNS, self.WHITE_BISHOPS, self.WHITE_KNIGHTS, self.WHITE_ROOKS, self.WHITE_QUEEN, self.WHITE_KING,
                          self.BLACK_PAWNS, self.BLACK_BISHOPS, self.BLACK_KNIGHTS, self.BLACK_ROOKS, self.BLACK_QUEEN, self.BLACK_KING]
         return all_bitboards
+    
+    #returns all white pieces in one bitboard, making pieces undistinguishable
+    def getWhitepieces(self):
+        pieces = 0
+        all_bitboards = self.getBoard()
+        for i in range(0, 6):
+            pieces = pieces ^ all_bitboards[i]
+        return pieces
+    
+    #returns all black pieces in one bitboard, making pieces undistinguishable
+    def getBlackpieces(self):
+        pieces = 0
+        all_bitboards = self.getBoard()
+        for i in range(6, 12):
+            pieces = pieces ^ all_bitboards[i]
+        return pieces
+    
+    #returns all squares that are seen by white pieces
+    def getWhitechecks(self):
+
+        return
+    
+    #returns all squares that are seen by black pieces
+    def getBlackchecks(self):
+        return
 
     def switchTurn(self):
         if self.turn_Color == self.c_WHITE:
@@ -205,6 +229,11 @@ class Chessboard:
 
         self.boardPrinting(self.WHITE_KNIGHTS)
 
+
+
+#!
+#! below here only temporary testing code
+#!
 
 board = Chessboard()  # create a new board object
 board.entireBoardPrinting()
