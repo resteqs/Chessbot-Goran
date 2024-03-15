@@ -10,7 +10,7 @@ def successors(self, state, color):
     return
     
 
-#calculates all (pseudo, so not checking if checks) legal moves for a piece
+#calculates all truely legal moves for a piece
 def legalMoves(self, board: board.Chessboard, numerical_position, piece, color):
 
     legal_moves = []

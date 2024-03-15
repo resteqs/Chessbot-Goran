@@ -3,7 +3,6 @@
 
 import movements as movements
 import gameInput as gameInput
-import successor as successor
 
 #Die Klasse speichert den Zustand des Spiels. Es soll alle nötigen Bitboards selber bereitstellen. Es muss alle Bitboards selber berechenen können mit
 #entsprechenden Funktionen. 
@@ -13,12 +12,10 @@ class Chessboard:
     c_WHITE = 1
     c_BLACK = 0
 
-    turn_Color = c_WHITE
-
-    L_BORDER = 0b1000000010000000100000001000000010000000100000001000000010000000 #equals A file
-    R_BORDER = 0b0000000100000001000000010000000100000001000000010000000100000001 #equals H file
-    T_BORDER = 0b1111111100000000000000000000000000000000000000000000000000000000 #equals rank 8
-    B_BORDER = 0b0000000000000000000000000000000000000000000000000000000011111111 #equals rank 1
+    L_BORDER = 0b1000000010000000100000001000000010000000100000001000000010000000 # equals A file
+    R_BORDER = 0b0000000100000001000000010000000100000001000000010000000100000001 # equals H file
+    T_BORDER = 0b1111111100000000000000000000000000000000000000000000000000000000 # equals rank 8
+    B_BORDER = 0b0000000000000000000000000000000000000000000000000000000011111111 # equals rank 1
 
     B_FILE = 0b0100000001000000010000000100000001000000010000000100000001000000
     G_FILE = 0b0000001000000010000000100000001000000010000000100000001000000010
@@ -39,7 +36,9 @@ class Chessboard:
         self.BLACK_BISHOPS = 0b0010010000000000000000000000000000000000000000000000000000000000
         self.BLACK_QUEEN = 0b0001000000000000000000000000000000000000000000000000000000000000
         self.BLACK_KING = 0b0000100000000000000000000000000000000000000000000000000000000000
+        self.turn_Color = self.c_WHITE # possibly let this be set by a parameter given for flexibility
 
+    # prints one given bitboard in binary
     def boardPrinting(self, bitboard):
         for bit in range(64, 0, -1):  # iterate from 64 (inclusive) to 0 (exclusive) with step -1
             if bit % 8 == 0:
@@ -86,12 +85,13 @@ class Chessboard:
             else:
                 print("·", end=" ")
 
+    # returns all bitboards in a list
     def getBoard(self):
         all_bitboards = [self.WHITE_PAWNS, self.WHITE_BISHOPS, self.WHITE_KNIGHTS, self.WHITE_ROOKS, self.WHITE_QUEEN, self.WHITE_KING,
                          self.BLACK_PAWNS, self.BLACK_BISHOPS, self.BLACK_KNIGHTS, self.BLACK_ROOKS, self.BLACK_QUEEN, self.BLACK_KING]
         return all_bitboards
     
-    #returns all white pieces in one bitboard, making pieces undistinguishable
+    # returns all white pieces in one bitboard, making pieces undistinguishable
     def getWhitepieces(self):
         pieces = 0
         all_bitboards = self.getBoard()
@@ -99,7 +99,7 @@ class Chessboard:
             pieces = pieces ^ all_bitboards[i]
         return pieces
     
-    #returns all black pieces in one bitboard, making pieces undistinguishable
+    # returns all black pieces in one bitboard, making pieces undistinguishable
     def getBlackpieces(self):
         pieces = 0
         all_bitboards = self.getBoard()
@@ -107,129 +107,218 @@ class Chessboard:
             pieces = pieces ^ all_bitboards[i]
         return pieces
     
-    #returns all squares that are seen by white pieces
+    # returns all squares that are seen by white pieces
     def getWhitechecks(self):
-
+        #TODO implement
         return
     
-    #returns all squares that are seen by black pieces
+    # returns all squares that are seen by black pieces
     def getBlackchecks(self):
+        #TODO implement
         return
-
+    
+    # switches turn color
     def switchTurn(self):
         if self.turn_Color == self.c_WHITE:
             self.turn_Color = self.c_BLACK
         else:
             self.turn_Color = self.c_WHITE
 
+    # returns current turn color
     def getColor(self):
         return self.turn_Color
     
-    def calcDiagRayattacks(self, numerical_position): #basically bishop attacks
-        rayattacks = 0
+    # returns all possible pseudo pawn movements, given one position and color
+    def calcPseudoPawnAttacks(self, numerical_position, color):
+        pawnattacks = 0
         pos = 1 << numerical_position
-        #NW ray
+        b_pieces = self.getBlackpieces
+        w_pieces = self.getWhitepieces
+
+        if color == self.c_WHITE: # white pawns
+            if pos & self.T_BORDER == 0:
+                if (pos << 8) & (w_pieces | b_pieces) == 0:
+                    pawnattacks = pawnattacks | (pos << 8) # single pawn push
+                if pos & self.RANK_2 != 0 and (pos << 16) & (w_pieces | b_pieces) == 0:
+                    pawnattacks = pawnattacks | (pos << 16) # double pawn push
+                if pos & self.L_BORDER == 0 and (pos << 9) & b_pieces != 0:
+                    pawnattacks = pawnattacks | (pos << 9) # left diagonal capture
+                if pos & self.R_BORDER == 0 and (pos << 7) & b_pieces != 0:
+                    pawnattacks = pawnattacks | (pos << 7) # right diagonal capture
+        else: # black pawns
+            if pos & self.B_BORDER == 0:
+                if (pos >> 8) & (w_pieces | b_pieces) == 0:
+                    pawnattacks = pawnattacks | (pos >> 8) # single pawn push
+                if pos & self.RANK_7 != 0 and (pos >> 16) & (w_pieces | b_pieces) == 0:
+                    pawnattacks = pawnattacks | (pos >> 16) # double pawn push
+                if pos & self.L_BORDER == 0 and (pos >> 7) & w_pieces != 0:
+                    pawnattacks = pawnattacks | (pos >> 7) # left diagonal capture
+                if pos & self.R_BORDER == 0 and (pos >> 9) & w_pieces != 0:
+                    pawnattacks = pawnattacks | (pos >> 9) # right diagonal capture
+        return pawnattacks
+    
+    # returns all possible pseudo bishop movements, given one position and color
+    def calcPseudoBishopAttacks(self, numerical_position, color):
+        bishopattacks = 0
+        pos = 1 << numerical_position
+
+        if color == self.c_WHITE:
+            own_pieces = self.getWhitepieces
+            opp_pieces = self.getBlackpieces
+        else:
+            own_pieces = self.getBlackpieces
+            opp_pieces = self.getWhitepieces
+
+        # NW ray
         i = pos
         while i & self.T_BORDER == 0 and i & self.L_BORDER == 0:
             i <<= 9
-            rayattacks = rayattacks | i
-        #NE ray
+            if i & own_pieces != 0:
+                break
+            bishopattacks = bishopattacks | i
+            if i & opp_pieces != 0:
+                break
+        # NE ray
         i = pos
         while i & self.T_BORDER == 0 and i & self.R_BORDER == 0:
             i <<= 7
-            rayattacks = rayattacks | i
-        #SW ray
+            if i & own_pieces != 0:
+                break
+            bishopattacks = bishopattacks | i
+            if i & opp_pieces != 0:
+                break
+        # SW ray
         i = pos
         while i & self.B_BORDER == 0 and i & self.L_BORDER == 0:
             i >>= 7
-            rayattacks = rayattacks | i
-        #SE ray
+            if i & own_pieces != 0:
+                break
+            bishopattacks = bishopattacks | i
+            if i & opp_pieces != 0:
+                break
+        # SE ray
         i = pos
         while i & self.B_BORDER == 0 and i & self.R_BORDER == 0:
             i >>= 9
-            rayattacks = rayattacks | i
-        return rayattacks
+            if i & own_pieces != 0:
+                break
+            bishopattacks = bishopattacks | i
+            if i & opp_pieces != 0:
+                break  
+        return bishopattacks
     
-    def calcVerticalRayattacks(self, numerical_position): #basically rook attacks
-        rayattacks = 0
+    # returns all possible pseudo knight movements, given one position and color
+    def calcPseudoKnightAttacks(self, numerical_position, color):
+        knightattacks = 0
         pos = 1 << numerical_position
-        #N ray
+
+        if color == self.c_WHITE:
+            own_pieces = self.getWhitepieces
+        else:
+            own_pieces = self.getBlackpieces
+
+        if pos & (self.T_BORDER | self.G_FILE | self.R_BORDER) == 0 and (pos << 6) & own_pieces == 0:
+            knightattacks = knightattacks | pos << 6 # NoEaEa
+        if pos & (self.R_BORDER | self.RANK_7 | self.T_BORDER) == 0 and (pos << 15) & own_pieces == 0:
+            knightattacks = knightattacks | pos << 15 # NoNoEa
+        if pos & (self.L_BORDER | self.RANK_7 | self.T_BORDER) == 0 and (pos << 17) & own_pieces == 0:
+            knightattacks = knightattacks | pos << 17 # NoNoWe
+        if pos & (self.T_BORDER | self.B_FILE | self.L_BORDER) == 0 and (pos << 10) & own_pieces == 0:
+            knightattacks = knightattacks | pos << 10 # NoWeWe
+        if pos & (self.B_BORDER | self.B_FILE | self.L_BORDER) == 0 and (pos >> 6) & own_pieces == 0:
+            knightattacks = knightattacks | pos >> 6 # SoWeWe
+        if pos & (self.L_BORDER | self.RANK_2 | self.B_BORDER) == 0 and (pos >> 15) & own_pieces == 0:
+            knightattacks = knightattacks | pos >> 15 # SoSoWe
+        if pos & (self.R_BORDER | self.RANK_2 | self.B_BORDER) == 0 and (pos >> 17) & own_pieces == 0:
+            knightattacks = knightattacks | pos >> 17 # SoSoEa
+        if pos & (self.B_BORDER | self.G_FILE | self.R_BORDER) == 0 and (pos >> 10) & own_pieces == 0:
+            knightattacks = knightattacks | pos >> 10 # SoEaEa
+        return knightattacks
+    
+    # returns all possible pseudo rook movements, given one position and color
+    def calcPsedoRookAttacks(self, numerical_position, color):
+        rookattacks = 0
+        pos = 1 << numerical_position
+
+        if color == self.c_WHITE:
+            own_pieces = self.getWhitepieces
+            opp_pieces = self.getBlackpieces
+        else:
+            own_pieces = self.getBlackpieces
+            opp_pieces = self.getWhitepieces
+
+        # N ray
         i = pos
         while i & self.T_BORDER == 0:
             i <<= 8
-            rayattacks = rayattacks | i
-        #E ray
+            if i & own_pieces != 0:
+                break
+            rookattacks = rookattacks | i
+            if i & opp_pieces != 0:
+                break
+        # E ray
         i = pos
         while i & self.R_BORDER == 0:
             i >>= 1
-            rayattacks = rayattacks | i
-        #S ray
+            if i & own_pieces != 0:
+                break
+            rookattacks = rookattacks | i
+            if i & opp_pieces != 0:
+                break
+        # S ray
         i = pos
         while i & self.B_BORDER == 0:
             i >>= 8
-            rayattacks = rayattacks | i
-        #W ray
+            if i & own_pieces != 0:
+                break
+            rookattacks = rookattacks | i
+            if i & opp_pieces != 0:
+                break
+        # W ray
         i = pos
         while i & self.L_BORDER == 0:
             i <<= 1
-            rayattacks = rayattacks | i
-        print(rayattacks)
-        return rayattacks
+            if i & own_pieces != 0:
+                break
+            rookattacks = rookattacks | i
+            if i & opp_pieces != 0:
+                break
+        return rookattacks
     
-    def calcSquareAttacks(self, numerical_position): #basically king attacks
-        squareattacks = 0
+    # returns all possible pseudo queen movements, given one position and color
+    def calcPseudoQueenAttacks(self, numerical_position, color):
+        return self.calcPsedoRookAttacks(numerical_position, color) | self.calcPseudoBishopAttacks(numerical_position, color)
+    
+    # returns all possible pseudo king movements, given one positon and color
+    def calcPseudoKingAttacks(self, numerical_position, color):
+        kingattacks = 0
         pos = 1 << numerical_position
-        squareattacks = squareattacks | (pos & ~self.T_BORDER) << 8 #No
-        squareattacks = squareattacks | (pos & ~(self.T_BORDER | self.L_BORDER)) << 9 #NoWe
-        squareattacks = squareattacks | (pos & ~self.L_BORDER) << 1 #We
-        squareattacks = squareattacks | (pos & ~(self.B_BORDER | self.L_BORDER)) >> 7 #SoWe
-        squareattacks = squareattacks | (pos & ~self.B_BORDER) >> 8 #So
-        squareattacks = squareattacks | (pos & ~(self.B_BORDER | self.R_BORDER)) >> 9 #SoEa
-        squareattacks = squareattacks | (pos & ~self.R_BORDER) >> 1 #Ea
-        squareattacks = squareattacks | (pos & ~(self.T_BORDER | self.R_BORDER)) << 7 #NoEa
-        return squareattacks
-    
-    def calcPawnAttacks(self, numerical_position, color): #pawn attacks, independant if capturing or moving
-        pawnattacks = 0
-        pos = 1 << numerical_position 
+
         if color == self.c_WHITE:
-            pawnattacks = pawnattacks | (pos & self.RANK_2) << 16 #double push
-            pawnattacks = pawnattacks | (pos & ~self.T_BORDER) << 8 #single push
-            pawnattacks = pawnattacks | (pos & ~(self.L_BORDER | self.T_BORDER)) << 9 #left diagonal capture
-            pawnattacks = pawnattacks | (pos & ~(self.R_BORDER | self.T_BORDER)) << 7 #right diagonal capture
+            own_pieces = self.getWhitepieces
         else:
-            pawnattacks = pawnattacks | (pos & self.RANK_7) >> 16 #double push
-            pawnattacks = pawnattacks | (pos & ~self.B_BORDER) >> 8 #single push
-            pawnattacks = pawnattacks | (pos & ~(self.L_BORDER | self.B_BORDER)) >> 7 #left diagonal capture
-            pawnattacks = pawnattacks | (pos & ~(self.R_BORDER | self.B_BORDER)) >> 9 #right diagonal capture
-
-        print(pawnattacks)
-        return pawnattacks
-
+            own_pieces = self.getBlackpieces
+        
+        if pos & self.T_BORDER == 0:
+            if (pos << 8) & own_pieces == 0:
+                kingattacks = kingattacks | pos << 8 # No
+            if pos & self.R_BORDER == 0 and (pos << 7) & own_pieces == 0:
+                kingattacks = kingattacks | pos << 7 # NoEa
+            if pos & self.L_BORDER == 0 and (pos << 9) & own_pieces == 0:
+                kingattacks = kingattacks | pos << 9 # NoWe
+        if pos & self.B_BORDER == 0:
+            if (pos >> 8) & own_pieces == 0:
+                kingattacks = kingattacks | pos >> 8 # So
+            if pos & self.L_BORDER == 0 and (pos >> 7) & own_pieces == 0:
+                kingattacks = kingattacks | pos >> 7 # SoWe
+            if pos & self.R_BORDER == 0 and (pos >> 9) & own_pieces == 0:
+                kingattacks = kingattacks | pos >> 9 # SoEa
+        if pos & self.L_BORDER == 0 and (pos << 1) & own_pieces == 0:
+            kingattacks = kingattacks | pos << 1 # We
+        if pos & self.R_BORDER == 0 and (pos >> 1) & own_pieces == 0:
+            kingattacks = kingattacks | pos >> 1 # Ea
+        return kingattacks
     
-    def calcKnightAttacks(self, numerical_position): #knight attacks
-        knightattacks = 0
-        pos = 1 << numerical_position
-        knightattacks = knightattacks | (pos & ~(self.R_BORDER | self.RANK_7 | self.T_BORDER)) << 15 #NoNoEa
-        knightattacks = knightattacks | (pos & ~(self.L_BORDER | self.RANK_7 | self.T_BORDER)) << 17 #NoNoWe
-        knightattacks = knightattacks | (pos & ~(self.T_BORDER | self.B_FILE | self.L_BORDER)) << 10 #NoWeWe
-        knightattacks = knightattacks | (pos & ~(self.B_BORDER | self.B_FILE | self.L_BORDER)) >> 6  #SoWeWe
-        knightattacks = knightattacks | (pos & ~(self.L_BORDER | self.RANK_2 | self.B_BORDER)) >> 15 #SoSoWe
-        knightattacks = knightattacks | (pos & ~(self.R_BORDER | self.RANK_2 | self.B_BORDER)) >> 17 #SoSoEa
-        knightattacks = knightattacks | (pos & ~(self.B_BORDER | self.G_FILE | self.R_BORDER)) >> 10 #SoEaEa
-        knightattacks = knightattacks | (pos & ~(self.T_BORDER | self.G_FILE | self.R_BORDER)) << 6  #NoEaEa
-        return knightattacks
-    
-
-    def test(self, i):
-        knight = (self.WHITE_KNIGHTS >> i) & 1
-        self.WHITE_KNIGHTS = self.WHITE_KNIGHTS & ~(1 << i)
-        knight = knight << 8
-        self.WHITE_KNIGHTS = self.WHITE_KNIGHTS | (knight << i)
-
-        self.boardPrinting(self.WHITE_KNIGHTS)
-
-
 
 #!
 #! below here only temporary testing code
