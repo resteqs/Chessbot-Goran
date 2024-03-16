@@ -35,7 +35,8 @@ class Chessboard:
                  black_knights=0b0100001000000000000000000000000000000000000000000000000000000000, 
                  black_bishops=0b0010010000000000000000000000000000000000000000000000000000000000, 
                  black_queen=0b0001000000000000000000000000000000000000000000000000000000000000, 
-                 black_king=0b0000100000000000000000000000000000000000000000000000000000000000):
+                 black_king=0b0000100000000000000000000000000000000000000000000000000000000000,
+                 turn_Color = 'w'): #needs to get castling rights, en passents, (halfclock) additionally
         self.WHITE_PAWNS = white_pawns
         self.WHITE_ROOKS = white_rooks
         self.WHITE_KNIGHTS = white_knights
@@ -48,7 +49,10 @@ class Chessboard:
         self.BLACK_BISHOPS = black_bishops
         self.BLACK_QUEEN = black_queen
         self.BLACK_KING = black_king
-        self.turn_Color = self.c_WHITE # possibly let this be set by a parameter given for flexibility
+        if turn_Color == 'w':
+            self.turn_Color = self.c_WHITE # possibly let this be set by a parameter given for flexibility
+        else:
+            turn_Color = self.c_BLACK
 
     # prints one given bitboard in binary
     def boardPrinting(self, bitboard):
