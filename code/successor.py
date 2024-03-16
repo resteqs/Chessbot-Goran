@@ -1,5 +1,5 @@
 
-import board as board
+#import board as board
 
 #successor function
 def successors(self, state, color):
@@ -11,7 +11,8 @@ def successors(self, state, color):
     
 
 #calculates all (pseudo, so not checking if checks) legal moves for a piece
-def legalMoves(self, board: board.Chessboard, numerical_position, piece, color):
+#def legalMoves(self, board: board.Chessboard, numerical_position, piece, color):
+def legalMoves(self,  numerical_position, piece, color):
 
     legal_moves = []
 
