@@ -5,13 +5,13 @@ import board as board
 def successors(self, state, color):
 
     #calculate and return all possible next moves
-    #run method legal_moves on every piece
+    #run method legalMoves on every piece
 
     return
     
 
 #calculates all truely legal moves for a piece
-def legalMoves(self, board: board.Chessboard, numerical_position, piece, color):
+def legalMoves(board: board.Chessboard, numerical_position, piece, color):
 
     legal_moves = []
 
