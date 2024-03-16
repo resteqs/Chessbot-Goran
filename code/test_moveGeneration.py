@@ -1,7 +1,7 @@
 from board import Chessboard
 
-def create_bitboards_from_fen():
-    fenInput = input("Enter FEN notation: ")  #example: rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1
+def create_bitboards_from_fen(userInput):
+    fenInput = userInput  #example: rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1
     fen = fenInput.split()
 
     boardPositions = fen[0]
@@ -84,8 +84,31 @@ def create_bitboards_from_fen():
    
     # Create a Chessboard object with the bitboards
     chessboard = Chessboard(white_pawns, white_knights, white_bishops, white_rooks, white_queens, white_king,
-                            black_pawns, black_knights, black_bishops, black_rooks, black_queens, black_king)
+                            black_pawns, black_knights, black_bishops, black_rooks, black_queens, black_king, color_turn)
     chessboard.entireBoardPrinting()
+    return chessboard
+
+def create_bitboards_from_userInput():
+   create_bitboards_from_fen(input("Enter FEN notation: "))
+
+def Perft2():
+    #Perft results
+    D1_NODES = 48
+    D2_NODES = 2039
+    D3_NODES = 97862
+    D4_NODES = 4085603
+    D5_NODES = 193690690
+    D6_NODES = 8031647685
+
+    fen_notation = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 1 1"
+    chessboard = create_bitboards_from_fen(fen_notation)
+    #boardlist = successor(chessboard)
+    #if(boardlist.length == D1_NODES):
+    #   We good
+    #else:
+    #   We fucked
 
 
-create_bitboards_from_fen()
+
+
+create_bitboards_from_userInput()
