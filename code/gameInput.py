@@ -1,4 +1,8 @@
 
+
+#! THE WORK ON THIS FILE IS TEMPORARILY PAUSED
+
+
 # specific defined chess notation:
 # King K, Queen Q, Rook R, Bishop B, Knight N, Pawn P
 # always carry piece char along and never add any additionals like '+' or 'x' for checks and takes

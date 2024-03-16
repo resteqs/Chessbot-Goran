@@ -1,3 +1,4 @@
+
 from board import Chessboard
 
 def create_bitboards_from_fen(userInput):
@@ -8,7 +9,7 @@ def create_bitboards_from_fen(userInput):
     color_turn = fen[1]
     castlingRights = fen[2]
     enPassant = fen[3]
-    halmove = int(fen[4])
+    halfmove = int(fen[4])
     fullmove = int(fen[5])
 
      # Initialize empty bitboards for each piece
@@ -24,8 +25,6 @@ def create_bitboards_from_fen(userInput):
     black_rooks = 0
     black_queens = 0
     black_king = 0
-
-
 
     current_bit = 63
     for char in boardPositions:
@@ -89,7 +88,7 @@ def create_bitboards_from_fen(userInput):
     return chessboard
 
 def create_bitboards_from_userInput():
-   create_bitboards_from_fen(input("Enter FEN notation: "))
+    create_bitboards_from_fen(input("Enter FEN notation: "))
 
 def Perft2():
     #Perft results

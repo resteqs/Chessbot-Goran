@@ -1,8 +1,9 @@
+
 #MTD(f) code written in python for understanding it better
 #not the code we want to use in the end
 
 
-
+"""
 def iterativeDeepening(root, max_depth: int) -> int:
 
     #! innitial guess, set to 0
@@ -118,3 +119,5 @@ def AlphaBetaEnhanced(n, alpha, beta, d: int) -> int:
 
     
     return g
+
+"""

@@ -1,5 +1,8 @@
 
 
+#! THIS FILE NEEDS MAJOR REVAMP
+
+
 from heuristic import HeuristicFunction
 from successor import SuccessorFunction
 import board
