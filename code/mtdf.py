@@ -21,7 +21,7 @@ def iterativeDeepening(root, max_depth: int) -> int:
     #! this corresponds to the best guess we had at the depth of when our time was exhausted
     return f
 
-#! root stores the game state, as well which turn it is, f is our first guess, d is our max depth for this deepening stage
+#! root stores the game state, as well which turn it is; f is our first guess; d is our max depth for this deepening stage
 def MTDF(root, f: int, d: int) -> int:
 
     #! writing our best guess from previous deepining stage to g
