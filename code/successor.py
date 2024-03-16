@@ -1,5 +1,5 @@
 
-import board as board
+#import board as board
 
 #successor function
 def successors(self, state, color):

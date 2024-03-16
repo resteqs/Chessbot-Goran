@@ -1,4 +1,4 @@
-
+#TODO implement detecting endgame
 # heuristic funtion
 import board
 
@@ -6,7 +6,9 @@ gameState = board.Chessboard()
 
 # heuristic megafunction
 def gogos_little_brain(gameState: board.Chessboard):
-    return difference_of_pieces(gameState) + piece_tables(gameState)
+    if isDraw_heuristic(): #if a draw return 0
+        return 0
+    return (difference_of_pieces(gameState) + piece_tables(gameState))
 
 
 def difference_of_pieces(gameState: board.Chessboard):
@@ -299,3 +301,10 @@ def pieceTablesWhite(gameState: board.Chessboard):
                     score += PST_KING_EG[64 - bit]
             return score
         return score
+
+def isDraw_heuristic(gameState: board.Chessboard):
+    if gameState.isDraw():
+        return True
+    else:
+        return False
+
