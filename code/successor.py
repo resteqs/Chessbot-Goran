@@ -1,43 +1,164 @@
 
 from board import Chessboard
+import movement as movement
 
-# successor function
+# successor function, calculates all legal moves for the position
 def successors(board: Chessboard):
+    legal_moves = []
 
-    #calculate and return all possible next moves
-    #run method legalMoves on every piece
+    rev_b_P = 0
+    rev_b_B = 0
+    rev_b_N = 0
+    rev_b_R = 0
+    rev_b_Q = 0
+    rev_b_K = 0
 
-    return
+    if board.getColor() == board.c_WHITE:
+        b_P = bin(board.WHITE_PAWNS)[2:]
+        rev_b_P = b_P[::-1]
+        b_B = bin(board.WHITE_BISHOPS)[2:]
+        rev_b_B = b_B[::-1]
+        b_N = bin(board.WHITE_KNIGHTS)[2:]
+        rev_b_N = b_N[::-1]
+        b_R = bin(board.WHITE_ROOKS)[2:]
+        rev_b_R = b_R[::-1]
+        b_Q = bin(board.WHITE_QUEEN)[2:]
+        rev_b_Q = b_Q[::-1]
+        b_K = bin(board.WHITE_KING)[2:]
+        rev_b_K = b_K[::-1]
+    else:
+        b_P = bin(board.BLACK_PAWNS)[2:]
+        rev_b_P = b_P[::-1]
+        b_B = bin(board.BLACK_BISHOPS)[2:]
+        rev_b_B = b_B[::-1]
+        b_N = bin(board.BLACK_KNIGHTS)[2:]
+        rev_b_N = b_N[::-1]
+        b_R = bin(board.BLACK_ROOKS)[2:]
+        rev_b_R = b_R[::-1]
+        b_Q = bin(board.BLACK_QUEEN)[2:]
+        rev_b_Q = b_Q[::-1]
+        b_K = bin(board.BLACK_KING)[2:]
+        rev_b_K = b_K[::-1]
+    
+    for i, bit in enumerate(rev_b_P):
+            if bit == '1':
+                legal_moves.extend(legalMoves(board, i, 'P'))
+    for i, bit in enumerate(rev_b_B):
+            if bit == '1':
+                legal_moves.extend(legalMoves(board, i, 'B'))
+    for i, bit in enumerate(rev_b_N):
+            if bit == '1':
+                legal_moves.extend(legalMoves(board, i, 'N'))
+    for i, bit in enumerate(rev_b_R):
+            if bit == '1':
+                legal_moves.extend(legalMoves(board, i, 'R'))
+    for i, bit in enumerate(rev_b_Q):
+            if bit == '1':
+                legal_moves.extend(legalMoves(board, i, 'Q'))
+    for i, bit in enumerate(rev_b_K):
+            if bit == '1':
+                legal_moves.extend(legalMoves(board, i, 'K'))
+
+    return legal_moves
     
 
-# calculates all truely legal moves for a piece
-def legalMoves(board: Chessboard, numerical_position, piece):
+# calculates all truely legal moves for one piece
+def legalMoves(board: Chessboard, num_pos, piece):
     legal_moves = []
-    color = board.getColor()
-    bitboard = 0
+    all_boards = board.getBoard()
+    color = 'w'
+    if board.getColor() == board.c_BLACK:
+        color = 'b'
 
     if piece == 'P':
-        pass
+        bitboard = calcPseudoPawnAttacks(board, num_pos, board.getColor()) | calcPseudoPawnCaptures(board, num_pos, board.getColor())
+        b = bin(bitboard)[2:]
+        rev_b = b[::-1]
+        for i, bit in enumerate(rev_b):
+            if bit == '1':
+                succ = Chessboard(all_boards[0], all_boards[3], all_boards[2], all_boards[1], all_boards[4],  all_boards[5],
+                                  all_boards[6], all_boards[9], all_boards[8], all_boards[7], all_boards[10], all_boards[11], color)
+                movement.move(succ, 'P', num_pos, i)
+                checks = getChecks(succ)
+                if checks & (succ.BLACK_KING | succ.WHITE_KING) == 0: 
+                    legal_moves.append(succ)
+        
     elif piece == 'B':
-        pass
+        bitboard = calcPseudoBishopAttacks(board, num_pos)
+        b = bin(bitboard)[2:]
+        rev_b = b[::-1]
+        for i, bit in enumerate(rev_b):
+            if bit == '1':
+                succ = Chessboard(all_boards[0], all_boards[3], all_boards[2], all_boards[1], all_boards[4],  all_boards[5],
+                                  all_boards[6], all_boards[9], all_boards[8], all_boards[7], all_boards[10], all_boards[11], color)
+                movement.move(succ, 'B', num_pos, i)
+                checks = getChecks(succ)
+                if checks & (succ.BLACK_KING | succ.WHITE_KING) == 0: 
+                    legal_moves.append(succ)
+
     elif piece == 'N':
-        pass
+        bitboard = calcPseudoKnightAttacks(board, num_pos)
+        b = bin(bitboard)[2:]
+        rev_b = b[::-1]
+        for i, bit in enumerate(rev_b):
+            if bit == '1':
+                succ = Chessboard(all_boards[0], all_boards[3], all_boards[2], all_boards[1], all_boards[4],  all_boards[5],
+                                  all_boards[6], all_boards[9], all_boards[8], all_boards[7], all_boards[10], all_boards[11], color)
+                movement.move(succ, 'N', num_pos, i)
+                checks = getChecks(succ)
+                if checks & (succ.BLACK_KING | succ.WHITE_KING) == 0: 
+                    legal_moves.append(succ)
+
     elif piece == 'R':
-        pass
+        bitboard = calcPseudoRookAttacks(board, num_pos)
+        b = bin(bitboard)[2:]
+        rev_b = b[::-1]
+        for i, bit in enumerate(rev_b):
+            if bit == '1':
+                succ = Chessboard(all_boards[0], all_boards[3], all_boards[2], all_boards[1], all_boards[4],  all_boards[5],
+                                  all_boards[6], all_boards[9], all_boards[8], all_boards[7], all_boards[10], all_boards[11], color)
+                movement.move(succ, 'R', num_pos, i)
+                checks = getChecks(succ)
+                if checks & (succ.BLACK_KING | succ.WHITE_KING) == 0: 
+                    legal_moves.append(succ)
+
     elif piece == 'Q':
-        pass
+        bitboard = calcPseudoQueenAttacks(board, num_pos)
+        b = bin(bitboard)[2:]
+        rev_b = b[::-1]
+        for i, bit in enumerate(rev_b):
+            if bit == '1':
+                succ = Chessboard(all_boards[0], all_boards[3], all_boards[2], all_boards[1], all_boards[4],  all_boards[5],
+                                  all_boards[6], all_boards[9], all_boards[8], all_boards[7], all_boards[10], all_boards[11], color)
+                movement.move(succ, 'Q', num_pos, i)
+                checks = getChecks(succ)
+                if checks & (succ.BLACK_KING | succ.WHITE_KING) == 0: 
+                    legal_moves.append(succ)
+
     elif piece == 'K':
-        pass
+        bitboard = calcPseudoKingAttacks(board, num_pos)
+        b = bin(bitboard)[2:]
+        rev_b = b[::-1]
+        for i, bit in enumerate(rev_b):
+            if bit == '1':
+                succ = Chessboard(all_boards[0], all_boards[3], all_boards[2], all_boards[1], all_boards[4],  all_boards[5],
+                                  all_boards[6], all_boards[9], all_boards[8], all_boards[7], all_boards[10], all_boards[11], color)
+                movement.move(succ, 'K', num_pos, i)
+                checks = getChecks(succ)
+                if checks & (succ.BLACK_KING | succ.WHITE_KING) == 0: 
+                    legal_moves.append(succ)
+
 
     return legal_moves
 
 
-# returns a bitboard of all squares that are seen by a given color
+# returns a bitboard of all squares that are seen by the opposing turn color (eg. if it is white's turn, it will return black checks)
 #! I am not that sure how efficient this method is, but ChatGPT says its O(log n) for every for-loop, so quite efficient
 #! but of course their might be better ways of iterating through a bitboard and selecting 1-bits
 def getChecks(board: Chessboard):
     checks = 0
     
+    board.switchTurn()
     if board.getColor() == board.c_WHITE:
         b = bin(board.WHITE_PAWNS)[2:]
         rev_b = b[::-1]
@@ -69,7 +190,38 @@ def getChecks(board: Chessboard):
         for i, bit in enumerate(rev_b):
             if bit == '1':
                 checks = checks | calcPseudoKingAttacks(board, i)
-
+    else:
+        b = bin(board.BLACK_PAWNS)[2:]
+        rev_b = b[::-1]
+        for i, bit in enumerate(rev_b):
+            if bit == '1':
+                checks = checks | calcPseudoPawnCaptures(board, i, board.c_BLACK)
+        b = bin(board.BLACK_BISHOPS)[2:]
+        rev_b = b[::-1]
+        for i, bit in enumerate(rev_b):
+            if bit == '1':
+                checks = checks | calcPseudoBishopAttacks(board, i)
+        b = bin(board.BLACK_KNIGHTS)[2:]
+        rev_b = b[::-1]
+        for i, bit in enumerate(rev_b):
+            if bit == '1':
+                checks = checks | calcPseudoKnightAttacks(board, i)
+        b = bin(board.BLACK_ROOKS)[2:]
+        rev_b = b[::-1]
+        for i, bit in enumerate(rev_b):
+            if bit == '1':
+                checks = checks | calcPseudoRookAttacks(board, i)
+        b = bin(board.BLACK_QUEEN)[2:]
+        rev_b = b[::-1]
+        for i, bit in enumerate(rev_b):
+            if bit == '1':
+                checks = checks | calcPseudoQueenAttacks(board, i)
+        b = bin(board.BLACK_KING)[2:]
+        rev_b = b[::-1]
+        for i, bit in enumerate(rev_b):
+            if bit == '1':
+                checks = checks | calcPseudoKingAttacks(board, i)
+    board.switchTurn()
     return checks
 
 # returns all possible pseudo pawn movements, given one position
@@ -277,8 +429,7 @@ def calcPseudoKingAttacks(board: Chessboard, numerical_position):
 
 
 board = Chessboard()
-checks = getWhitechecks(board)
-board.boardPrinting(checks)
 board.switchTurn()
-checks = getBlackchecks(board)
-board.boardPrinting(checks)
+moves = successors(board)
+for m in moves:
+    m.entireBoardPrinting()
