@@ -1,11 +1,11 @@
 
 # TODO implement detecting endgame
 
-"""
+
 
 import board
 
-gameState = board.Chessboard()
+
 
 # heuristic megafunction
 def gogos_little_brain(gameState: board.Chessboard):
@@ -13,23 +13,29 @@ def gogos_little_brain(gameState: board.Chessboard):
         return 0
     return (difference_of_pieces(gameState) + piece_tables(gameState))
 
+def count_piecese(gameState: board.Chessboard):
+    return (gameState.WHITE_PAWNS.bit_count(), gameState.WHITE_KNIGHTS.bit_count(), gameState.WHITE_BISHOPS.bit_count(),
+            gameState.WHITE_ROOKS.bit_count(), gameState.WHITE_QUEEN.bit_count(),gameState.BLACK_PAWNS.bit_count(),
+            gameState.BLACK_BISHOPS.bit_count(), gameState.BLACK_KNIGHTS.bit_count(), gameState.BLACK_ROOKS.bit_count(),
+            gameState.BLACK_QUEEN.bit_count()
+            )
+
+#Here i store the number of each piece in the game (besides kings, but... yeah...)
+w_pnum, w_knnum, w_bnum, w_rnum, w_qnum, b_pnum, b_knnum, b_bnum, b_rnum, b_qnum = count_piecese()
 
 def difference_of_pieces(gameState: board.Chessboard):
     # sums the value of the pieces of each color and returns the difference
     # 100, 400, 410, 600, 1200 as in CentiPawns
-    white_Value = (gameState.WHITE_PAWNS.bit_count() * 100 +
-                   gameState.WHITE_BISHOPS.bit_count() * 400 +
-                   gameState.WHITE_KNIGHTS.bit_count() * 410 +
-                   gameState.WHITE_ROOKS.bit_count() * 600 +
-                   gameState.WHITE_QUEEN.bit_count() * 1200
-                   )
-    black_Value = (gameState.BLACK_PAWNS.bit_count() * 100 +
-                   gameState.BLACK_BISHOPS.bit_count() * 400 +
-                   gameState.BLACK_KNIGHTS.bit_count() * 410 +
-                   gameState.BLACK_ROOKS.bit_count() * 600 +
-                   gameState.BLACK_QUEEN.bit_count() * 1200
-                   )
+    white_Value = w_pnum * 100 + w_knnum *400 + w_bnum *410 + w_rnum * 600 + w_qnum * 1200
+    black_Value = b_pnum * 100 + b_knnum * 400 + b_bnum * 410 + b_rnum * 600 + b_qnum * 1200
     return white_Value - black_Value
+
+def isEndgame(gameState: board.Chessboard):
+    def isEndgame(gameState: board.Chessboard):
+        if gameState.WHITE_PAWNS.bit_count() + gameState.WHITE_BISHOPS.bit_count() + gameState.WHITE_KNIGHTS.bit_count() + gameState.WHITE_ROOKS.bit_count() + gameState.WHITE_QUEEN.bit_count() + gameState.BLACK_PAWNS.bit_count() + gameState.BLACK_BISHOPS.bit_count() + gameState.BLACK_KNIGHTS.bit_count() + gameState.BLACK_ROOKS.bit_count() + gameState.BLACK_QUEEN.bit_count() < 10:
+            return True
+        else:
+            return False
 
 
 def piece_tables():
@@ -177,7 +183,7 @@ PST_KING_EG = (
 def pieceTablesBlack(gameState: board.Chessboard):
     # PAWNS
     score = 0
-    if endgame == False:
+    if isEndgame() == False:
         for bit in range(1, 65):
             curr_bit = (gameState.BLACK_PAWNS >> bit - 1) & 1
             if (curr_bit == 1):
@@ -243,7 +249,7 @@ def pieceTablesBlack(gameState: board.Chessboard):
 def pieceTablesWhite(gameState: board.Chessboard):
         # PAWNS
         score = 0
-        if endgame == False:
+        if isEndgame() == False:
             for bit in range(1, 65):
                 curr_bit = (gameState.WHITE_PAWNS >> bit - 1) & 1
                 if (curr_bit == 1):
@@ -308,11 +314,22 @@ def pieceTablesWhite(gameState: board.Chessboard):
         return score
 
 def isDraw_heuristic(gameState: board.Chessboard):
-    if gameState.isDraw():
-        return True
-    else:
-        return False
+    #1. Test insufficient material
+    # sum all pieces
+    sum = w_pnum + w_knnum +  w_bnum +  w_rnum + w_qnum + b_pnum + b_knnum + b_bnum + b_rnum + b_qnum
+    if sum == 1 and (w_knnum == 1 or b_knnum == 1 or b_bnum or w_bnum):
+        #draw
+        pass
+    elif sum == 2 and (w_knnum == 2 or b_knnum == 2):
+        #draw
+        pass
+        #!The following are "almost" draws. They are cituations were the chance of either side to win is nearly 0
+        #!My idea is to simplify them into draws so that we try to avoid the situations just in case
+    elif sum == 2 and ((w_knnum == 1 and w_knnum == 1) or (w_knnum == 1 and b_bnum == 1) or (w_bnum == 1 or b_knnum == 1)):
+        #almost draw
+        pass
+
+
+
 
         
-
-"""
