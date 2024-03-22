@@ -1,5 +1,6 @@
 #Testing
 from board import Chessboard
+import successor
 
 def create_bitboards_from_fen(userInput):
     fenInput = userInput  #example: rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1
@@ -82,9 +83,9 @@ def create_bitboards_from_fen(userInput):
             current_bit -= 1
    
     # Create a Chessboard object with the bitboards
-    chessboard = Chessboard(white_pawns, white_knights, white_bishops, white_rooks, white_queens, white_king,
-                            black_pawns, black_knights, black_bishops, black_rooks, black_queens, black_king, color_turn)
-    chessboard.entireBoardPrinting()
+    chessboard = Chessboard(white_pawns, white_rooks, white_knights, white_bishops, white_queens, white_king,
+                            black_pawns, black_rooks, black_knights, black_bishops, black_queens, black_king, color_turn)
+    # chessboard.entireBoardPrinting()
     return chessboard
 
 def create_bitboards_from_userInput():
@@ -101,13 +102,98 @@ def Perft2():
 
     fen_notation = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 1 1"
     chessboard = create_bitboards_from_fen(fen_notation)
-    #boardlist = successor(chessboard)
-    #if(boardlist.length == D1_NODES):
-    #   We good
-    #else:
-    #   We fucked
+    boardlist = successor.successors(chessboard)
+    
+    for m in boardlist:
+        print("")
+        m.entireBoardPrinting()
+    
+    if(len(boardlist) == D1_NODES):
+        print("SUCCESSFULL")
+        print(len(boardlist))
+        print(D1_NODES)
+    else:
+        print("FUCK")
+        print(len(boardlist))
+        print(D1_NODES)
+
+def Perft1():
+    #Perft results
+    D1_NODES = 20
+    D2_NODES = 400
+    D3_NODES = 8902
+    D4_NODES = 197281
+    D5_NODES = 4865609
+    D6_NODES = 119060324
+
+    chessboard = Chessboard()
+    boardlist = successor.successors(chessboard)
+    
+    if(len(boardlist) == D1_NODES):
+        print("SUCCESSFULL")
+        print(len(boardlist))
+        print(D1_NODES)
+    else:
+        print("FUCK")
+        print(len(boardlist))
+        print(D1_NODES)
+
+    boardlist2 = []
+    for b in boardlist:
+        b.switchTurn()
+        boardlist2.extend(successor.successors(b))
+
+    if(len(boardlist2) == D2_NODES):
+        print("SUCCESSFULL")
+        print(len(boardlist2))
+        print(D2_NODES)
+    else:
+        print("FUCK")
+        print(len(boardlist2))
+        print(D2_NODES)
+    
+    boardlist3 = []
+    for b in boardlist2:
+        b.switchTurn()
+        boardlist3.extend(successor.successors(b))
+
+    if(len(boardlist3) == D3_NODES):
+        print("SUCCESSFULL")
+        print(len(boardlist3))
+        print(D3_NODES)
+    else:
+        print("FUCK")
+        print(len(boardlist3))
+        print(D3_NODES)
+    
+    boardlist4 = []
+    for b in boardlist3:
+        b.switchTurn()
+        boardlist4.extend(successor.successors(b))
+
+    if(len(boardlist4) == D4_NODES):
+        print("SUCCESSFULL")
+        print(len(boardlist4))
+        print(D4_NODES)
+    else:
+        print("FUCK")
+        print(len(boardlist4))
+        print(D4_NODES)
+    
+    boardlist5 = []
+    for b in boardlist4:
+        b.switchTurn()
+        boardlist5.extend(successor.successors(b))
+
+    if(len(boardlist5) == D5_NODES):
+        print("SUCCESSFULL")
+        print(len(boardlist5))
+        print(D5_NODES)
+    else:
+        print("FUCK")
+        print(len(boardlist5))
+        print(D5_NODES)
 
 
 
-
-create_bitboards_from_userInput()
+Perft1()

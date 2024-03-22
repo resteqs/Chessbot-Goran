@@ -234,14 +234,14 @@ def calcPseudoPawnAttacks(board: Chessboard, numerical_position, color):
         if pos & board.T_BORDER == 0:
             if (pos << 8) & pieces == 0:
                 pawnattacks = pawnattacks | (pos << 8) # single pawn push
-            if pos & board.RANK_2 != 0 and (pos << 16) & pieces == 0:
-                pawnattacks = pawnattacks | (pos << 16) # double pawn push
+                if pos & board.RANK_2 != 0 and (pos << 16) & pieces == 0:
+                    pawnattacks = pawnattacks | (pos << 16) # double pawn push
     else: # black pawns
         if pos & board.B_BORDER == 0:
             if (pos >> 8) & pieces == 0:
                 pawnattacks = pawnattacks | (pos >> 8) # single pawn push
-            if pos & board.RANK_7 != 0 and (pos >> 16) & pieces == 0:
-                pawnattacks = pawnattacks | (pos >> 16) # double pawn push
+                if pos & board.RANK_7 != 0 and (pos >> 16) & pieces == 0:
+                    pawnattacks = pawnattacks | (pos >> 16) # double pawn push
     return pawnattacks
 
 # returns all possible pseudo pawn captures, given one position
@@ -426,10 +426,3 @@ def calcPseudoKingAttacks(board: Chessboard, numerical_position):
     if pos & board.R_BORDER == 0 and (pos >> 1) & own_pieces == 0:
         kingattacks = kingattacks | pos >> 1 # Ea
     return kingattacks
-
-
-board = Chessboard()
-board.switchTurn()
-moves = successors(board)
-for m in moves:
-    m.entireBoardPrinting()
