@@ -1,6 +1,8 @@
 
 # TODO implement detecting endgame
 
+"""
+
 import board
 
 gameState = board.Chessboard()
@@ -311,3 +313,6 @@ def isDraw_heuristic(gameState: board.Chessboard):
     else:
         return False
 
+        
+
+"""

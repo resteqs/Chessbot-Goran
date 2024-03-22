@@ -1,7 +1,7 @@
 
 from board import Chessboard
 
-#successor function
+# successor function
 def successors(board: Chessboard):
 
     #calculate and return all possible next moves
@@ -10,10 +10,11 @@ def successors(board: Chessboard):
     return
     
 
-#calculates all truely legal moves for a piece
+# calculates all truely legal moves for a piece
 def legalMoves(board: Chessboard, numerical_position, piece):
-
     legal_moves = []
+    color = board.getColor()
+    bitboard = 0
 
     match piece:
         case 'P':
@@ -32,43 +33,121 @@ def legalMoves(board: Chessboard, numerical_position, piece):
     return legal_moves
 
 
-# returns all squares that are seen by white pieces
-def getWhitechecks(self):
-    #TODO implement
-    return
+# returns a bitboard of all squares that are seen by white pieces
+#! I am not that sure how efficient this method is, but ChatGPT says its O(log n) for every for-loop, so quite efficient
+#! but of course their might be better ways of iterating through a bitboard and selecting 1-bits
+def getWhitechecks(board: Chessboard):
+    checks = 0
+    
+    b = bin(board.WHITE_PAWNS)[2:]
+    rev_b = b[::-1]
+    for i, bit in enumerate(rev_b):
+        if bit == '1':
+            checks = checks | calcPseudoPawnCaptures(board, i, board.c_WHITE)
+    b = bin(board.WHITE_BISHOPS)[2:]
+    rev_b = b[::-1]
+    for i, bit in enumerate(rev_b):
+        if bit == '1':
+            checks = checks | calcPseudoBishopAttacks(board, i)
+    b = bin(board.WHITE_KNIGHTS)[2:]
+    rev_b = b[::-1]
+    for i, bit in enumerate(rev_b):
+        if bit == '1':
+            checks = checks | calcPseudoKnightAttacks(board, i)
+    b = bin(board.WHITE_ROOKS)[2:]
+    rev_b = b[::-1]
+    for i, bit in enumerate(rev_b):
+        if bit == '1':
+            checks = checks | calcPseudoRookAttacks(board, i)
+    b = bin(board.WHITE_QUEEN)[2:]
+    rev_b = b[::-1]
+    for i, bit in enumerate(rev_b):
+        if bit == '1':
+            checks = checks | calcPseudoQueenAttacks(board, i)
+    b = bin(board.WHITE_KING)[2:]
+    rev_b = b[::-1]
+    for i, bit in enumerate(rev_b):
+        if bit == '1':
+            checks = checks | calcPseudoKingAttacks(board, i)
+
+    return checks
    
 # returns all squares that are seen by black pieces
-def getBlackchecks(self):
-    #TODO implement
-    return
+def getBlackchecks(board: Chessboard):
+    checks = 0
+    
+    b = bin(board.BLACK_PAWNS)[2:]
+    rev_b = b[::-1]
+    for i, bit in enumerate(rev_b):
+        if bit == '1':
+            checks = checks | calcPseudoPawnCaptures(board, i, board.c_BLACK)
+    b = bin(board.BLACK_BISHOPS)[2:]
+    rev_b = b[::-1]
+    for i, bit in enumerate(rev_b):
+        if bit == '1':
+            checks = checks | calcPseudoBishopAttacks(board, i)
+    b = bin(board.BLACK_KNIGHTS)[2:]
+    rev_b = b[::-1]
+    for i, bit in enumerate(rev_b):
+        if bit == '1':
+            checks = checks | calcPseudoKnightAttacks(board, i)
+    b = bin(board.BLACK_ROOKS)[2:]
+    rev_b = b[::-1]
+    for i, bit in enumerate(rev_b):
+        if bit == '1':
+            checks = checks | calcPseudoRookAttacks(board, i)
+    b = bin(board.BLACK_QUEEN)[2:]
+    rev_b = b[::-1]
+    for i, bit in enumerate(rev_b):
+        if bit == '1':
+            checks = checks | calcPseudoQueenAttacks(board, i)
+    b = bin(board.BLACK_KING)[2:]
+    rev_b = b[::-1]
+    for i, bit in enumerate(rev_b):
+        if bit == '1':
+            checks = checks | calcPseudoKingAttacks(board, i)
+
+    return checks
 
 # returns all possible pseudo pawn movements, given one position
-def calcPseudoPawnAttacks(board: Chessboard, numerical_position):
+def calcPseudoPawnAttacks(board: Chessboard, numerical_position, color):
     pawnattacks = 0
     pos = 1 << numerical_position
-    b_pieces = board.getBlackpieces()
-    w_pieces = board.getWhitepieces()
+    pieces = board.getBlackpieces() | board.getWhitepieces()
     
-    if board.getColor() == board.c_WHITE: # white pawns
+    if color == board.c_WHITE: # white pawns
         if pos & board.T_BORDER == 0:
-            if (pos << 8) & (w_pieces | b_pieces) == 0:
+            if (pos << 8) & pieces == 0:
                 pawnattacks = pawnattacks | (pos << 8) # single pawn push
-            if pos & board.RANK_2 != 0 and (pos << 16) & (w_pieces | b_pieces) == 0:
+            if pos & board.RANK_2 != 0 and (pos << 16) & pieces == 0:
                 pawnattacks = pawnattacks | (pos << 16) # double pawn push
-            if pos & board.L_BORDER == 0 and (pos << 9) & b_pieces != 0:
-                pawnattacks = pawnattacks | (pos << 9) # left diagonal capture
-            if pos & board.R_BORDER == 0 and (pos << 7) & b_pieces != 0:
-                pawnattacks = pawnattacks | (pos << 7) # right diagonal capture
     else: # black pawns
         if pos & board.B_BORDER == 0:
-            if (pos >> 8) & (w_pieces | b_pieces) == 0:
+            if (pos >> 8) & pieces == 0:
                 pawnattacks = pawnattacks | (pos >> 8) # single pawn push
-            if pos & board.RANK_7 != 0 and (pos >> 16) & (w_pieces | b_pieces) == 0:
+            if pos & board.RANK_7 != 0 and (pos >> 16) & pieces == 0:
                 pawnattacks = pawnattacks | (pos >> 16) # double pawn push
-            if pos & board.L_BORDER == 0 and (pos >> 7) & w_pieces != 0:
-                pawnattacks = pawnattacks | (pos >> 7) # left diagonal capture
-            if pos & board.R_BORDER == 0 and (pos >> 9) & w_pieces != 0:
-                pawnattacks = pawnattacks | (pos >> 9) # right diagonal capture
+    return pawnattacks
+
+# returns all possible pseudo pawn captures, given one position
+def calcPseudoPawnCaptures(board: Chessboard, numerical_position, color):
+    pawnattacks = 0
+    pos = 1 << numerical_position
+
+    if color == board.c_WHITE: # white, so we can capture black pieces
+        opp_pieces = board.getBlackpieces()
+        if pos & board.T_BORDER == 0:
+            if pos & board.L_BORDER == 0 and (pos << 9) & opp_pieces != 0:
+                pawnattacks = pawnattacks | (pos << 9) # left diagonal capture
+            if pos & board.R_BORDER == 0 and (pos << 7) & opp_pieces != 0:
+                pawnattacks = pawnattacks | (pos << 7) # right diagonal capture
+    else: # black, so we can capture white pieces
+        opp_pieces = board.getWhitepieces()
+        if pos & board.B_BORDER == 0:
+            if pos & board.R_BORDER == 0 and (pos >> 9) & opp_pieces != 0:
+                pawnattacks = pawnattacks | (pos >> 9) # left diagonal capture
+            if pos & board.L_BORDER == 0 and (pos >> 7) & opp_pieces != 0:
+                pawnattacks = pawnattacks | (pos >> 7) # right diagonal capture
     return pawnattacks
     
 # returns all possible pseudo bishop movements, given one position
@@ -232,3 +311,8 @@ def calcPseudoKingAttacks(board: Chessboard, numerical_position):
     if pos & board.R_BORDER == 0 and (pos >> 1) & own_pieces == 0:
         kingattacks = kingattacks | pos >> 1 # Ea
     return kingattacks
+
+
+board = Chessboard()
+checks = getWhitechecks(board)
+board.boardPrinting(checks)
