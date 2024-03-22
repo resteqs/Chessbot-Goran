@@ -16,96 +16,46 @@ def legalMoves(board: Chessboard, numerical_position, piece):
     color = board.getColor()
     bitboard = 0
 
-    match piece:
-        case 'P':
-            pass
-        case 'B':
-            pass
-        case 'N':
-            pass
-        case 'R':
-            pass
-        case 'Q':
-            pass
-        case 'K':
-            pass
-
     return legal_moves
 
 
-# returns a bitboard of all squares that are seen by white pieces
+# returns a bitboard of all squares that are seen by a given color
 #! I am not that sure how efficient this method is, but ChatGPT says its O(log n) for every for-loop, so quite efficient
 #! but of course their might be better ways of iterating through a bitboard and selecting 1-bits
-def getWhitechecks(board: Chessboard):
+def getChecks(board: Chessboard):
     checks = 0
     
-    b = bin(board.WHITE_PAWNS)[2:]
-    rev_b = b[::-1]
-    for i, bit in enumerate(rev_b):
-        if bit == '1':
-            checks = checks | calcPseudoPawnCaptures(board, i, board.c_WHITE)
-    b = bin(board.WHITE_BISHOPS)[2:]
-    rev_b = b[::-1]
-    for i, bit in enumerate(rev_b):
-        if bit == '1':
-            checks = checks | calcPseudoBishopAttacks(board, i)
-    b = bin(board.WHITE_KNIGHTS)[2:]
-    rev_b = b[::-1]
-    for i, bit in enumerate(rev_b):
-        if bit == '1':
-            checks = checks | calcPseudoKnightAttacks(board, i)
-    b = bin(board.WHITE_ROOKS)[2:]
-    rev_b = b[::-1]
-    for i, bit in enumerate(rev_b):
-        if bit == '1':
-            checks = checks | calcPseudoRookAttacks(board, i)
-    b = bin(board.WHITE_QUEEN)[2:]
-    rev_b = b[::-1]
-    for i, bit in enumerate(rev_b):
-        if bit == '1':
-            checks = checks | calcPseudoQueenAttacks(board, i)
-    b = bin(board.WHITE_KING)[2:]
-    rev_b = b[::-1]
-    for i, bit in enumerate(rev_b):
-        if bit == '1':
-            checks = checks | calcPseudoKingAttacks(board, i)
-
-    return checks
-   
-# returns all squares that are seen by black pieces
-def getBlackchecks(board: Chessboard):
-    checks = 0
-    
-    b = bin(board.BLACK_PAWNS)[2:]
-    rev_b = b[::-1]
-    for i, bit in enumerate(rev_b):
-        if bit == '1':
-            checks = checks | calcPseudoPawnCaptures(board, i, board.c_BLACK)
-    b = bin(board.BLACK_BISHOPS)[2:]
-    rev_b = b[::-1]
-    for i, bit in enumerate(rev_b):
-        if bit == '1':
-            checks = checks | calcPseudoBishopAttacks(board, i)
-    b = bin(board.BLACK_KNIGHTS)[2:]
-    rev_b = b[::-1]
-    for i, bit in enumerate(rev_b):
-        if bit == '1':
-            checks = checks | calcPseudoKnightAttacks(board, i)
-    b = bin(board.BLACK_ROOKS)[2:]
-    rev_b = b[::-1]
-    for i, bit in enumerate(rev_b):
-        if bit == '1':
-            checks = checks | calcPseudoRookAttacks(board, i)
-    b = bin(board.BLACK_QUEEN)[2:]
-    rev_b = b[::-1]
-    for i, bit in enumerate(rev_b):
-        if bit == '1':
-            checks = checks | calcPseudoQueenAttacks(board, i)
-    b = bin(board.BLACK_KING)[2:]
-    rev_b = b[::-1]
-    for i, bit in enumerate(rev_b):
-        if bit == '1':
-            checks = checks | calcPseudoKingAttacks(board, i)
+    if board.getColor() == board.c_WHITE:
+        b = bin(board.WHITE_PAWNS)[2:]
+        rev_b = b[::-1]
+        for i, bit in enumerate(rev_b):
+            if bit == '1':
+                checks = checks | calcPseudoPawnCaptures(board, i, board.c_WHITE)
+        b = bin(board.WHITE_BISHOPS)[2:]
+        rev_b = b[::-1]
+        for i, bit in enumerate(rev_b):
+            if bit == '1':
+                checks = checks | calcPseudoBishopAttacks(board, i)
+        b = bin(board.WHITE_KNIGHTS)[2:]
+        rev_b = b[::-1]
+        for i, bit in enumerate(rev_b):
+            if bit == '1':
+                checks = checks | calcPseudoKnightAttacks(board, i)
+        b = bin(board.WHITE_ROOKS)[2:]
+        rev_b = b[::-1]
+        for i, bit in enumerate(rev_b):
+            if bit == '1':
+                checks = checks | calcPseudoRookAttacks(board, i)
+        b = bin(board.WHITE_QUEEN)[2:]
+        rev_b = b[::-1]
+        for i, bit in enumerate(rev_b):
+            if bit == '1':
+                checks = checks | calcPseudoQueenAttacks(board, i)
+        b = bin(board.WHITE_KING)[2:]
+        rev_b = b[::-1]
+        for i, bit in enumerate(rev_b):
+            if bit == '1':
+                checks = checks | calcPseudoKingAttacks(board, i)
 
     return checks
 
@@ -315,4 +265,7 @@ def calcPseudoKingAttacks(board: Chessboard, numerical_position):
 
 board = Chessboard()
 checks = getWhitechecks(board)
+board.boardPrinting(checks)
+board.switchTurn()
+checks = getBlackchecks(board)
 board.boardPrinting(checks)
