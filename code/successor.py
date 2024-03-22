@@ -16,19 +16,18 @@ def legalMoves(board: Chessboard, numerical_position, piece):
     color = board.getColor()
     bitboard = 0
 
-    match piece:
-        case 'P':
-            pass
-        case 'B':
-            pass
-        case 'N':
-            pass
-        case 'R':
-            pass
-        case 'Q':
-            pass
-        case 'K':
-            pass
+    if piece == 'P':
+        pass
+    elif piece == 'B':
+        pass
+    elif piece == 'N':
+        pass
+    elif piece == 'R':
+        pass
+    elif piece == 'Q':
+        pass
+    elif piece == 'K':
+        pass
 
     return legal_moves
 

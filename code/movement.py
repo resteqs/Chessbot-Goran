@@ -6,45 +6,43 @@ def move(boardObject, pieceChar, startField, endField):
     # Additional function checkForTakes, checks if a piece was taken at removes it
     color = boardObject.getColor()
     if color == boardObject.c_WHITE:
-        match pieceChar:
-            case 'P':
-                boardObject.WHITE_PAWNS = moveHelperFunction(
-                    boardObject.WHITE_PAWNS, startField, endField)
-            case 'N':
-                boardObject.WHITE_KNIGHTS = moveHelperFunction(
-                    boardObject.WHITE_KNIGHTS, startField, endField)
-            case 'B':
-                boardObject.WHITE_BISHOPS = moveHelperFunction(
-                    boardObject.WHITE_BISHOPS, startField, endField)
-            case 'R':
-                boardObject.WHITE_ROOKS = moveHelperFunction(
-                    boardObject.WHITE_ROOKS, startField, endField)
-            case 'Q':
-                boardObject.WHITE_QUEEN = moveHelperFunction(
-                    boardObject.WHITE_QUEEN, startField, endField)
-            case 'K':
-                boardObject.WHITE_KING = moveHelperFunction(
-                    boardObject.WHITE_KING, startField, endField)
+        if pieceChar == 'P':
+            boardObject.WHITE_PAWNS = moveHelperFunction(
+                boardObject.WHITE_PAWNS, startField, endField)
+        elif pieceChar == 'N':
+            boardObject.WHITE_KNIGHTS = moveHelperFunction(
+                boardObject.WHITE_KNIGHTS, startField, endField)
+        elif pieceChar == 'B':
+            boardObject.WHITE_BISHOPS = moveHelperFunction(
+                boardObject.WHITE_BISHOPS, startField, endField)
+        elif pieceChar == 'R':
+            boardObject.WHITE_ROOKS = moveHelperFunction(
+                boardObject.WHITE_ROOKS, startField, endField)
+        elif pieceChar == 'Q':
+            boardObject.WHITE_QUEEN = moveHelperFunction(
+                boardObject.WHITE_QUEEN, startField, endField)
+        elif pieceChar == 'K':
+            boardObject.WHITE_KING = moveHelperFunction(
+                boardObject.WHITE_KING, startField, endField)
     else:
-        match pieceChar:
-            case 'P':
-                boardObject.BLACK_PAWNS = moveHelperFunction(
-                    boardObject.BLACK_PAWNS, startField, endField)
-            case 'N':
-                boardObject.BLACK_KNIGHTS = moveHelperFunction(
-                    boardObject.BLACK_KNIGHTS, startField, endField)
-            case 'B':
-                boardObject.BLACK_BISHOPS = moveHelperFunction(
-                    boardObject.BLACK_BISHOPS, startField, endField)
-            case 'R':
-                boardObject.BLACK_ROOKS = moveHelperFunction(
-                    boardObject.BLACK_ROOKS, startField, endField)
-            case 'Q':
-                boardObject.BLACK_QUEEN = moveHelperFunction(
-                    boardObject.BLACK_QUEEN, startField, endField)
-            case 'K':
-                boardObject.BLACK_KING = moveHelperFunction(
-                    boardObject.BLACK_KING, startField, endField)
+        if pieceChar == 'P':
+            boardObject.BLACK_PAWNS = moveHelperFunction(
+                boardObject.BLACK_PAWNS, startField, endField)
+        elif pieceChar == 'N':
+            boardObject.BLACK_KNIGHTS = moveHelperFunction(
+                boardObject.BLACK_KNIGHTS, startField, endField)
+        elif pieceChar == 'B':
+            boardObject.BLACK_BISHOPS = moveHelperFunction(
+                boardObject.BLACK_BISHOPS, startField, endField)
+        elif pieceChar == 'R':
+            boardObject.BLACK_ROOKS = moveHelperFunction(
+                boardObject.BLACK_ROOKS, startField, endField)
+        elif pieceChar == 'Q':
+            boardObject.BLACK_QUEEN = moveHelperFunction(
+                boardObject.BLACK_QUEEN, startField, endField)
+        elif pieceChar == 'K':
+            boardObject.BLACK_KING = moveHelperFunction(
+                boardObject.BLACK_KING, startField, endField)
     checkForTakes(boardObject, endField, color)
 
 # Helper function for clean code
