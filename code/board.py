@@ -55,7 +55,7 @@ class Chessboard:
         if turn_Color == 'w':
             self.turn_Color = self.c_WHITE
         else:
-            turn_Color = self.c_BLACK
+            self.turn_Color = self.c_BLACK
 
     # prints one given bitboard in binary
     def boardPrinting(self, bitboard):
