@@ -9,5 +9,6 @@ Fancy Keywords:
 - Transposition Tables
 - Bitboards
 
-Our main ressources are coming from chessprogramming.org and the work of of Prof. Dr. Askee Platt (autor of MTD(f))
-This project is created for self education purposes
+Our main sources of information are chessprogramming.org and the work of of Prof. Dr. Askee Platt (author of MTD(f))
+Additionally we relly on some chess resources from chess.org 
+This project is created for self-education purposes only.
