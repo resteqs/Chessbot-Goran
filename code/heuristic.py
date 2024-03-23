@@ -7,6 +7,7 @@ import board
 
 
 
+
 # heuristic megafunction
 def gogos_little_brain(gameState: board.Chessboard):
     if isDraw_heuristic(): #if a draw return 0

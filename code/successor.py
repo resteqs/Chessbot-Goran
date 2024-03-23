@@ -13,6 +13,12 @@ def successors(board: Chessboard):
     rev_b_Q = 0
     rev_b_K = 0
 
+#TODO Hi da ich es nicht ganz verstehe schreibe ich erst ein paar notizen
+#Warum revrse fuer jedes Board? Kannst du nicht rueckwarts iterieren? Das Problem hier ist auch, dass daraus Strings gemacht werden
+#und dann wieder in Integers umgewandelt werden. Das ist nicht effizient.
+#Auerdem hast du mehrere Loops obwohl du das auch in einem machen koenntest.
+#Schaue dir dazu die methode entireBoardPrinting in board.py an.
+    
     if board.getColor() == board.c_WHITE:
         b_P = bin(board.WHITE_PAWNS)[2:]
         rev_b_P = b_P[::-1]
