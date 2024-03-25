@@ -1,4 +1,6 @@
 #Testing
+import cProfile as cProfile
+
 from board import Chessboard
 import successor
 
@@ -180,6 +182,7 @@ def Perft1():
         print(len(boardlist4))
         print(D4_NODES)
     
+    
     boardlist5 = []
     for b in boardlist4:
         b.switchTurn()
@@ -193,7 +196,23 @@ def Perft1():
         print("FUCK")
         print(len(boardlist5))
         print(D5_NODES)
+    
+    """
+    boardlist6 = []
+    for b in boardlist5:
+        b.switchTurn()
+        boardlist5.extend(successor.successors(b))
+
+    if(len(boardlist6) == D6_NODES):
+        print("SUCCESSFULL")
+        print(len(boardlist6))
+        print(D6_NODES)
+    else:
+        print("FUCK")
+        print(len(boardlist6))
+        print(D6_NODES)
+    """
 
 
 
-Perft1()
+cProfile.run('Perft1()')
