@@ -5,6 +5,7 @@ from board import Chessboard
 import successor
 
 import cProfile as benchmark #for profiling, delete in final version
+
 """
 from pympler.asizeof import asizeof
 from pympler.classtracker import ClassTracker
