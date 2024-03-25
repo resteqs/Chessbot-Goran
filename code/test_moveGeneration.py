@@ -5,10 +5,12 @@ from board import Chessboard
 import successor
 
 import cProfile as benchmark #for profiling, delete in final version
+"""
 from pympler.asizeof import asizeof
 from pympler.classtracker import ClassTracker
 tracker = ClassTracker()
 tracker.track_class(Chessboard)
+"""
 
 def create_bitboards_from_fen(userInput):
     fenInput = userInput  #example: rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1
@@ -179,7 +181,7 @@ def Perft1():
         b.switchTurn()
         boardlist4.extend(successor.successors(b))
     
-    tracker.create_snapshot()
+    # tracker.create_snapshot()
 
     if(len(boardlist4) == D4_NODES):
         print("SUCCESSFULL")
@@ -190,8 +192,8 @@ def Perft1():
         print(len(boardlist4))
         print(D4_NODES)
 
-    print(f"boardlist size: {asizeof(boardlist4)}")
-    print(f"board size: {asizeof(chessboard)}")
+    # print(f"boardlist size: {asizeof(boardlist4)}")
+    # print(f"board size: {asizeof(chessboard)}")
 
     """
     boardlist5 = []
@@ -224,4 +226,4 @@ def Perft1():
     """
 
 benchmark.run("Perft1()")
-tracker.stats.print_summary()
+# tracker.stats.print_summary()
