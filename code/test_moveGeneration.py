@@ -1,5 +1,5 @@
-#Testing
-import cProfile as cProfile
+
+# this code is for testing move generation
 
 from board import Chessboard
 import successor
@@ -183,7 +183,8 @@ def Perft1():
         print(len(boardlist4))
         print(D4_NODES)
     
-    """  boardlist5 = []
+    """
+    boardlist5 = []
     for b in boardlist4:
         b.switchTurn()
         boardlist4.extend(successor.successors(b))
@@ -196,8 +197,7 @@ def Perft1():
         print("FUCK")
         print(len(boardlist5))
         print(D5_NODES)
-    
-    """
+
     boardlist6 = []
     for b in boardlist5:
         b.switchTurn()
@@ -212,7 +212,5 @@ def Perft1():
         print(len(boardlist6))
         print(D6_NODES)
     """
-
-
 
 benchmark.run("Perft1()")
