@@ -112,19 +112,11 @@ class Chessboard:
     
     # returns all white pieces in one bitboard, making pieces undistinguishable
     def getWhitepieces(self):
-        pieces = 0
-        all_bitboards = self.getBoard()
-        for i in range(0, 6):
-            pieces = pieces ^ all_bitboards[i]
-        return pieces
+        return self.WHITE_PAWNS ^ self.WHITE_BISHOPS ^ self.WHITE_KNIGHTS ^ self.WHITE_ROOKS ^ self.WHITE_QUEEN ^ self.WHITE_KING
     
     # returns all black pieces in one bitboard, making pieces undistinguishable
     def getBlackpieces(self):
-        pieces = 0
-        all_bitboards = self.getBoard()
-        for i in range(6, 12):
-            pieces = pieces ^ all_bitboards[i]
-        return pieces
+        return self.BLACK_PAWNS ^ self.BLACK_BISHOPS ^ self.BLACK_KNIGHTS ^ self.BLACK_ROOKS ^ self.BLACK_QUEEN ^ self.BLACK_KING
     
     # switches turn color
     def switchTurn(self):

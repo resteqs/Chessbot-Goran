@@ -3,6 +3,7 @@ import cProfile as cProfile
 
 from board import Chessboard
 import successor
+import cProfile as benchmark #for profiling, delete in final version
 
 def create_bitboards_from_fen(userInput):
     fenInput = userInput  #example: rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1
@@ -182,11 +183,10 @@ def Perft1():
         print(len(boardlist4))
         print(D4_NODES)
     
-    
-    boardlist5 = []
+    """  boardlist5 = []
     for b in boardlist4:
         b.switchTurn()
-        boardlist5.extend(successor.successors(b))
+        boardlist4.extend(successor.successors(b))
 
     if(len(boardlist5) == D5_NODES):
         print("SUCCESSFULL")
@@ -215,4 +215,4 @@ def Perft1():
 
 
 
-cProfile.run('Perft1()')
+benchmark.run("Perft1()")
